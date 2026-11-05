@@ -1,0 +1,38 @@
+name = "the-furnace-isnt-free"
+main = "src/worker.js"
+compatibility_date = "2026-10-31"
+compatibility_flags = ["nodejs_compat"]
+
+# Static site. API routes are handled in the Worker before assets.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "404-page"
+html_handling = "auto-trailing-slash"
+run_worker_first = ["/count", "/v1/count", "/v1/stats", "/stats", "/api/*"]
+
+# Create these in Cloudflare before deploy. Leave them unset until then.
+# Durable page views and receipts need SITE_KV.
+# Private JPEG bytes should use UPLOADS (R2). Without R2, KV stores JPEGs up to 2 MB.
+#
+# [[kv_namespaces]]
+# binding = "SITE_KV"
+# id = "OWNER_KV_NAMESPACE_ID"
+#
+# [[r2_buckets]]
+# binding = "UPLOADS"
+# bucket_name = "the-furnace-isnt-free-private"
+
+[vars]
+CANONICAL_ORIGIN = "https://furnaceisntfree.com"
+
+# Attach these only after the furnaceisntfree.com zone is on the same Cloudflare account.
+# Apex is canonical. www is an alias; the Worker 301s it to https://furnaceisntfree.com.
+# [[routes]]
+# pattern = "furnaceisntfree.com"
+# custom_domain = true
+#
+# [[routes]]
+# pattern = "www.furnaceisntfree.com"
+# custom_domain = true
+CORPUS_FORWARD_IMAGES = "false"

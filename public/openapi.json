@@ -1,0 +1,117 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "The Furnace Isn't Free",
+    "version": "1.0.0",
+    "summary": "Page-view counter, usefulness receipts, and private offer notes.",
+    "description": "Public reads are counts only. Receipt export and private JPEGs require RECEIPT_READ_TOKEN. This document does not mean the production domain is deployed."
+  },
+  "servers": [
+    {
+      "url": "https://furnaceisntfree.com"
+    },
+    {
+      "url": "http://127.0.0.1:43127"
+    }
+  ],
+  "paths": {
+    "/count": {
+      "get": {
+        "summary": "Read page-view totals",
+        "responses": {
+          "200": {
+            "description": "View totals"
+          }
+        }
+      },
+      "post": {
+        "summary": "Count one known HTML path",
+        "responses": {
+          "200": {
+            "description": "Counted"
+          }
+        }
+      }
+    },
+    "/v1/count": {
+      "get": {
+        "summary": "Alias of GET /count",
+        "responses": {
+          "200": {
+            "description": "View totals"
+          }
+        }
+      }
+    },
+    "/v1/stats": {
+      "get": {
+        "summary": "Alias of the view counter JSON",
+        "responses": {
+          "200": {
+            "description": "View totals"
+          }
+        }
+      }
+    },
+    "/stats": {
+      "get": {
+        "summary": "View counter JSON. The human page is /stats/",
+        "responses": {
+          "200": {
+            "description": "View totals"
+          }
+        }
+      }
+    },
+    "/api/usefulness": {
+      "get": {
+        "summary": "Public usefulness meter",
+        "responses": {
+          "200": {
+            "description": "Aggregates"
+          }
+        }
+      }
+    },
+    "/api/feedback": {
+      "post": {
+        "summary": "Store a private usefulness receipt and optional JPEG",
+        "responses": {
+          "200": {
+            "description": "Receipt id"
+          }
+        }
+      }
+    },
+    "/api/receipts": {
+      "get": {
+        "summary": "Private receipt export",
+        "responses": {
+          "401": {
+            "description": "Token required"
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Process health, not a deploy claim",
+        "responses": {
+          "200": {
+            "description": "Health"
+          }
+        }
+      }
+    },
+    "/api/contact": {
+      "post": {
+        "summary": "Private contact message",
+        "responses": {
+          "200": {
+            "description": "Stored"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "author": "Aziel Eliab",
+  "author_id": "https://www.azieleliab.com/#aziel",
+  "person_id": "https://www.azieleliab.com/#aziel",
+  "site": "https://furnaceisntfree.com/",
+  "canonical": "https://furnaceisntfree.com/",
+  "alias": "https://www.furnaceisntfree.com/",
+  "title": "The Furnace Isn't Free",
+  "about": "Homeowner education on HVAC offer structure, furnace allowances, and quote transparency.",
+  "person": {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": "https://www.azieleliab.com/#aziel",
+    "name": "Aziel Eliab",
+    "url": "https://www.azieleliab.com/",
+    "sameAs": [
+      "https://www.azieleliab.com/#aziel",
+      "https://www.azieleliab.com/"
+    ]
+  },
+  "work": {
+    "@type": "WebSite",
+    "name": "The Furnace Isn't Free",
+    "url": "https://furnaceisntfree.com/"
+  },
+  "reviewed": "2026-10-31",
+  "note": "One project in the Aziel Eliab ecosystem. This file does not restate other projects' catalogs, and it does not claim production DNS is live."
+}
