@@ -9,7 +9,11 @@ directory = "./public"
 binding = "ASSETS"
 not_found_handling = "404-page"
 html_handling = "auto-trailing-slash"
-run_worker_first = ["/count", "/v1/count", "/v1/stats", "/stats", "/api/*"]
+# The Worker must see Host before static assets. Otherwise www and extensionless
+# HTML paths are answered by the asset layer (200 or a temporary 307) and the
+# script's 301 never runs. API routes are included because the Worker runs for
+# every path, then calls env.ASSETS.fetch for files it does not handle.
+run_worker_first = true
 
 # Create these in Cloudflare before deploy. Leave them unset until then.
 # Durable page views and receipts need SITE_KV.
@@ -26,8 +30,11 @@ run_worker_first = ["/count", "/v1/count", "/v1/stats", "/stats", "/api/*"]
 [vars]
 CANONICAL_ORIGIN = "https://furnaceisntfree.com"
 
-# Attach these only after the furnaceisntfree.com zone is on the same Cloudflare account.
-# Apex is canonical. www is an alias; the Worker 301s it to https://furnaceisntfree.com.
+# Custom domains stay commented. Binding www.furnaceisntfree.com is a Cloudflare
+# zone action. Application code cannot attach that hostname, and this file is not
+# a deploy. The Worker 301s GET/HEAD from www to the apex only when the request
+# actually reaches this script. If public www is served by another route, an
+# approved later deploy must uncomment the www custom domain on the owning account.
 # [[routes]]
 # pattern = "furnaceisntfree.com"
 # custom_domain = true

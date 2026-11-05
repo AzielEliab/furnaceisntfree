@@ -4,7 +4,7 @@ import path from "node:path";
 import test from "node:test";
 import { handleRequest } from "../lib/api.mjs";
 import worker from "../src/worker.js";
-import { PATHS } from "../lib/paths.mjs";
+import { CANONICAL_HTML_PATH, PATHS, canonicalRedirectUrl } from "../lib/paths.mjs";
 import { createMemoryStore } from "../lib/store-memory.mjs";
 import {
   analyzeQuotes,
@@ -350,7 +350,31 @@ test("discovery files allow indexing signals and cite the person id", async () =
   const llms = await readFile(path.join(publicDir, "llms.txt"), "utf8");
   assert.match(llms, /max\(0, equipment price/);
   assert.equal(await readFile(path.join(publicDir, "ai.txt"), "utf8"), llms);
-  assert.match(llms, /www\.furnaceisntfree\.com/);
+  assert.match(llms, /Alias: https:\/\/www\.furnaceisntfree\.com\/ \(301 to canonical host; verified 2026-11-05\)/);
+  assert.match(llms, /Cap-7 mesh DNS and public ICANN/);
+  assert.match(llms, /Paid satellite is HELD/);
+  assert.match(llms, /Remain-OFF/);
+  assert.doesNotMatch(llms, /indexing is live/i);
+  const lastmod = (loc) => {
+    const match = sitemap.match(new RegExp(`<loc>${loc.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</loc><lastmod>([^<]+)</lastmod>`));
+    assert.ok(match, loc);
+    return match[1];
+  };
+  assert.equal(lastmod("https://furnaceisntfree.com/aziel/"), "2026-11-05");
+  assert.equal(lastmod("https://furnaceisntfree.com/the-numbers/"), "2026-11-05");
+  assert.equal(lastmod("https://furnaceisntfree.com/how-the-offer-works/"), "2026-11-05");
+  assert.equal(lastmod("https://furnaceisntfree.com/discount-reality-check/"), "2026-11-05");
+  assert.equal(lastmod("https://furnaceisntfree.com/"), "2026-10-31");
+  assert.equal(lastmod("https://furnaceisntfree.com/about/"), "2026-10-31");
+  assert.equal(lastmod("https://furnaceisntfree.com/privacy/"), "2026-10-31");
+  assert.equal(lastmod("https://furnaceisntfree.com/checklist/"), "2026-10-31");
+  assert.ok(cite.person.sameAs.includes("https://github.com/AzielEliab"));
+  assert.ok(cite.person.sameAs.includes("https://x.com/AzielEliab"));
+  for (const sister of ["https://godlock.uk/", "https://timetounsealthebook.net/", "https://azielcorpuslibrary.net/"]) {
+    assert.equal(cite.person.sameAs.includes(sister), false, sister);
+    assert.ok(cite.person.subjectOf.some((item) => item.url === sister), sister);
+  }
+  assert.equal(cite.person.sameAs.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"), false);
 });
 
 test("aziel doors are the official sister set", async () => {
@@ -368,13 +392,174 @@ test("aziel doors are the official sister set", async () => {
   assert.match(html, /Official cross-chain sister handles/);
   assert.equal(html.includes("trades-runtime"), false);
   assert.equal(html.includes("glama.ai"), false);
-  assert.equal(/Cap-7|ICANN/i.test(html), false);
+  assert.match(html, /Cap-7 mesh DNS and public ICANN registration are different systems/);
+  assert.match(html, /Paid satellite is HELD/);
+  assert.match(html, /Remain-OFF locks stay off/);
+  assert.match(html, /Mesh tracking stays off/);
+  assert.doesNotMatch(html, /identity-lock|identity lock|id-lock/i);
+  const visible = html.replace(/<script[\s\S]*?<\/script>/g, " ");
+  assert.match(visible, /Cap-7 mesh DNS and public ICANN/);
+  const data = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  const pageNode = data.find((node) => node["@type"] === "WebPage");
+  assert.equal(pageNode.dateModified, "2026-11-05");
+  assert.equal(pageNode.additionalProperty.find((item) => item.name === "paid_satellite").value, "HELD");
+  assert.equal(pageNode.additionalProperty.find((item) => item.name === "mesh_tracking").value, "off");
+  assert.equal(pageNode.additionalProperty.find((item) => item.name === "cap7_dns").value, "separate_from_public_icann");
 });
 
 test("www alias redirects to the apex host", async () => {
   const response = await worker.fetch(new Request("https://www.furnaceisntfree.com/the-numbers/?q=1"), {});
   assert.equal(response.status, 301);
   assert.equal(response.headers.get("location"), "https://furnaceisntfree.com/the-numbers/?q=1");
+  assert.equal(response.headers.get("strict-transport-security"), "max-age=31536000");
+  assert.equal(/includeSubDomains|preload/i.test(response.headers.get("strict-transport-security")), false);
   const apex = await worker.fetch(new Request("https://furnaceisntfree.com/api/health"), {});
   assert.equal(apex.status, 200);
+  const health = await apex.json();
+  assert.equal(health.deployed, false);
+  assert.equal(health.indexing, "unconfirmed");
+  assert.equal(health.mesh_tracking, false);
+  assert.equal(health.source_base_tip_short, "472bb7c4");
+  assert.equal(health.noted_vid, "87b12512");
+  assert.equal(health.cap7_is_public_icann, false);
+  assert.equal(health.paid_satellite, "HELD");
+  assert.equal(health.remain_off, true);
+});
+
+function hstsOk(response) {
+  const value = response.headers.get("strict-transport-security");
+  assert.equal(value, "max-age=31536000");
+  assert.equal(/includeSubDomains|preload/i.test(value), false);
+}
+
+test("www and HTML aliases end on the apex in one hop", async () => {
+  assert.equal(CANONICAL_HTML_PATH.has("/stats"), false);
+  assert.equal(CANONICAL_HTML_PATH.get("/aziel"), "/aziel/");
+  const cases = [
+    ["https://www.furnaceisntfree.com/", "https://furnaceisntfree.com/"],
+    ["https://www.furnaceisntfree.com/aziel", "https://furnaceisntfree.com/aziel/"],
+    ["https://www.furnaceisntfree.com/aziel/", "https://furnaceisntfree.com/aziel/"],
+    ["https://www.furnaceisntfree.com/aziel?q=1", "https://furnaceisntfree.com/aziel/?q=1"],
+    ["https://www.furnaceisntfree.com/robots.txt", "https://furnaceisntfree.com/robots.txt"],
+    ["https://www.furnaceisntfree.com/sitemap.xml?x=2", "https://furnaceisntfree.com/sitemap.xml?x=2"],
+    ["https://furnaceisntfree.com/checklist", "https://furnaceisntfree.com/checklist/"],
+    ["https://www.furnaceisntfree.com/stats", "https://furnaceisntfree.com/stats"],
+    ["https://www.furnaceisntfree.com/images/social-card.png", "https://furnaceisntfree.com/images/social-card.png"]
+  ];
+  for (const [from, to] of cases) {
+    for (const method of ["GET", "HEAD"]) {
+      const response = await worker.fetch(new Request(from, { method }), {});
+      assert.equal(response.status, 301, `${method} ${from}`);
+      assert.equal(response.headers.get("location"), to, `${method} ${from}`);
+      hstsOk(response);
+      assert.equal(canonicalRedirectUrl(to, "GET"), null, to);
+    }
+  }
+  const post = await worker.fetch(
+    new Request("https://www.furnaceisntfree.com/api/feedback", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: "{}"
+    }),
+    {}
+  );
+  assert.notEqual(post.status, 301);
+  assert.notEqual(post.status, 308);
+  const postPage = await worker.fetch(new Request("https://furnaceisntfree.com/aziel", { method: "POST", body: "x" }), {});
+  assert.notEqual(postPage.status, 301);
+});
+
+test("/stats stays JSON and slash HTML aliases are permanent", async () => {
+  const store = createMemoryStore();
+  const stats = await worker.fetch(new Request("https://furnaceisntfree.com/stats"), { SITE_KV: undefined });
+  assert.equal(stats.status, 200);
+  assert.match(stats.headers.get("content-type"), /application\/json/);
+  const body = await stats.json();
+  assert.equal(typeof body.views, "number");
+  assert.equal(body.invent_users, false);
+  const htmlAlias = await worker.fetch(new Request("https://furnaceisntfree.com/stats/"), {});
+  assert.notEqual(htmlAlias.status, 301);
+  assert.notEqual(htmlAlias.headers.get("content-type") || "", "application/json");
+  const count = await handleRequest(new Request("https://furnaceisntfree.com/count"), { store, env: {} });
+  assert.equal(count.status, 200);
+  assert.match(count.headers.get("content-type"), /json/);
+  const version = await handleRequest(new Request("https://furnaceisntfree.com/version"), { store, env: {} });
+  assert.equal(version.status, 200);
+  const versionBody = await version.json();
+  assert.equal(versionBody.build_id, "furnace-seo-index-draft");
+  assert.equal(versionBody.deployed, false);
+  const healthAlias = await handleRequest(new Request("https://furnaceisntfree.com/health"), { store, env: {} });
+  assert.equal(healthAlias.status, 200);
+  const plain = await worker.fetch(new Request("http://127.0.0.1/api/health"), {});
+  assert.equal(plain.status, 200);
+  assert.equal(plain.headers.get("strict-transport-security"), null);
+});
+
+test("shared head, titles, person id, and social card", async () => {
+  const files = await htmlFiles(publicDir);
+  const card = await readFile(path.join(publicDir, "images", "social-card.png"));
+  assert.equal(card.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
+  assert.equal(card.subarray(12, 16).toString("ascii"), "IHDR");
+  assert.equal(card.readUInt32BE(16), 1200);
+  assert.equal(card.readUInt32BE(20), 630);
+  assert.ok(card.length < 200_000);
+  const sisters = ["godlock.uk", "timetounsealthebook.net", "azielcorpuslibrary.net", "hedidntjump.com"];
+  for (const file of files) {
+    if (file.endsWith(`${path.sep}404.html`)) continue;
+    const html = await readFile(file, "utf8");
+    assert.match(html, /property="og:image" content="https:\/\/furnaceisntfree\.com\/images\/social-card\.png"/);
+    assert.match(html, /property="og:image:width" content="1200"/);
+    assert.match(html, /property="og:image:height" content="630"/);
+    assert.match(html, /property="og:image:alt" content="The Furnace Isn't Free, a homeowner guide to HVAC offer structure"/);
+    assert.match(html, /name="twitter:card" content="summary_large_image"/);
+    assert.match(html, /name="twitter:title"/);
+    assert.match(html, /name="twitter:description"/);
+    assert.match(html, /name="twitter:image" content="https:\/\/furnaceisntfree\.com\/images\/social-card\.png"/);
+    assert.match(html, /name="twitter:image:alt"/);
+    assert.equal(html.includes("https://www.azieleliab.com/#aziel"), true);
+    assert.doesNotMatch(html, /"@id":"https:\/\/www\.azieleliab\.com\/#(?!aziel")/);
+    const data = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+    const website = data.find((node) => node["@type"] === "WebSite");
+    const person = data.find((node) => node["@type"] === "Person");
+    assert.equal(website["@id"], "https://furnaceisntfree.com/#website");
+    assert.equal(website.publisher["@id"], "https://www.azieleliab.com/#aziel");
+    assert.equal(person["@id"], "https://www.azieleliab.com/#aziel");
+    for (const sister of sisters) assert.equal(person.sameAs.some((url) => url.includes(sister)), false, file);
+    assert.equal(data.some((node) => node["@type"] === "Organization"), false);
+    assert.equal(data.some((node) => node["@type"] === "Book"), false);
+    const pageNode = data.find((node) => node["@type"] === "WebPage" || node["@type"] === "AboutPage");
+    const loc = pageNode.url;
+    const sitemap = await readFile(path.join(publicDir, "sitemap.xml"), "utf8");
+    const match = sitemap.match(new RegExp(`<loc>${loc.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</loc><lastmod>([^<]+)</lastmod>`));
+    assert.equal(pageNode.dateModified, match[1], loc);
+  }
+  const about = await readFile(path.join(publicDir, "about/index.html"), "utf8");
+  assert.match(about, /"@type":"AboutPage"/);
+  const home = await readFile(path.join(publicDir, "index.html"), "utf8");
+  assert.doesNotMatch(home, /AboutPage/);
+  const numbers = await readFile(path.join(publicDir, "the-numbers/index.html"), "utf8");
+  assert.match(numbers, /<title>Furnace Cost Calculator \| Equipment, Labor &amp; Allowance<\/title>/);
+  const offer = await readFile(path.join(publicDir, "how-the-offer-works/index.html"), "utf8");
+  assert.match(offer, /<title>How Free-Furnace Offers Work \| Installed Cost<\/title>/);
+  const discount = await readFile(path.join(publicDir, "discount-reality-check/index.html"), "utf8");
+  assert.match(discount, /<title>HVAC Discount Reality Check \| Offer Terms<\/title>/);
+  for (const file of ["how-the-offer-works/index.html", "repair-or-replace/index.html"]) {
+    const html = await readFile(path.join(publicDir, file), "utf8");
+    const data = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+    const faq = data.find((node) => node["@type"] === "FAQPage");
+    const visible = html.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+    for (const question of faq.mainEntity) {
+      assert.ok(visible.includes(question.name), question.name);
+      assert.ok(visible.includes(question.acceptedAnswer.text), question.acceptedAnswer.text);
+    }
+  }
+  const missing = await readFile(path.join(publicDir, "404.html"), "utf8");
+  assert.match(missing, /<h1>Page not found<\/h1>/);
+  assert.match(missing, /href="\/"/);
+  assert.match(missing, /noindex/);
+  const robots = await readFile(path.join(publicDir, "robots.txt"), "utf8");
+  assert.match(robots, /User-agent: ClaudeBot\nAllow: \//);
+  assert.match(robots, /User-agent: PerplexityBot\nAllow: \//);
+  assert.match(robots, /User-agent: Google-Extended\nAllow: \//);
+  assert.doesNotMatch(robots, /Disallow:\s*\/\s*$/m);
 });

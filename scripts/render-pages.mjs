@@ -2,10 +2,34 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { CANONICAL_ORIGIN, PATHS } from "../lib/paths.mjs";
 import { jpegRefuseCopy, QUOTE_FIELDS } from "../public/js/engine.js";
+import { writeSocialCard } from "./social-card.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const publicDir = path.join(root, "public");
 const REVIEWED = "2026-10-31";
+const PERSON_ID = "https://www.azieleliab.com/#aziel";
+const WEBSITE_ID = `${CANONICAL_ORIGIN}/#website`;
+const SOCIAL_IMAGE = `${CANONICAL_ORIGIN}/images/social-card.png`;
+const SOCIAL_ALT = "The Furnace Isn't Free, a homeowner guide to HVAC offer structure";
+const PERSON_SAME_AS = [
+  PERSON_ID,
+  "https://www.azieleliab.com/",
+  "https://github.com/AzielEliab",
+  "https://x.com/AzielEliab"
+];
+const SISTER_SUBJECTS = [
+  { "@type": "WebSite", name: "Aziel Corpus Library", url: "https://azielcorpuslibrary.net/" },
+  { "@type": "WebSite", name: "Godlock", url: "https://godlock.uk/" },
+  { "@type": "WebSite", name: "He Didn't Jump", url: "https://hedidntjump.com/" },
+  {
+    "@type": "SoftwareSourceCode",
+    name: "Aziel Runtime source",
+    url: "https://github.com/AzielEliab/aziel-runtime",
+    codeRepository: "https://github.com/AzielEliab/aziel-runtime"
+  },
+  { "@type": "WebSite", name: "Aziel Runtime hosted page", url: "https://aziel-runtime.vibelock.workers.dev/" },
+  { "@type": "WebSite", name: "Time to Unseal the Book", url: "https://timetounsealthebook.net/" }
+];
 
 const NAV = [
   ["How the Offer Works", "/how-the-offer-works/"],
@@ -69,6 +93,15 @@ function layout({ path: pagePath, title, description, body, robots = "index,foll
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${canonical}">
+<meta property="og:image" content="${SOCIAL_IMAGE}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(SOCIAL_ALT)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:description" content="${esc(description)}">
+<meta name="twitter:image" content="${SOCIAL_IMAGE}">
+<meta name="twitter:image:alt" content="${esc(SOCIAL_ALT)}">
 <meta name="theme-color" content="#123B57">
 ${jsonld ? `<script type="application/ld+json">${jsonld}</script>` : ""}
 </head>
@@ -108,29 +141,56 @@ ${body}
 `;
 }
 
-function pageJson(pagePath, title, description) {
-  const url = pagePath === "/" ? `${CANONICAL_ORIGIN}/` : `${CANONICAL_ORIGIN}${pagePath}`;
-  return JSON.stringify({
+function contentDate(page) {
+  return page.updated || REVIEWED;
+}
+
+function pageGraph(page) {
+  const url = page.path === "/" ? `${CANONICAL_ORIGIN}/` : `${CANONICAL_ORIGIN}${page.path}`;
+  const type = page.path === "/about/" ? "AboutPage" : "WebPage";
+  const webpage = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: title,
-    description,
+    "@type": type,
+    "@id": `${url}#webpage`,
+    name: page.title,
+    description: page.description,
     url,
     inLanguage: "en",
-    dateModified: REVIEWED,
-    isPartOf: {
-      "@type": "WebSite",
-      name: "The Furnace Isn't Free",
-      url: `${CANONICAL_ORIGIN}/`
-    },
-    author: {
-      "@type": "Person",
-      "@id": "https://www.azieleliab.com/#aziel",
-      name: "Aziel Eliab",
-      url: "https://www.azieleliab.com/",
-      sameAs: ["https://www.azieleliab.com/#aziel", "https://www.azieleliab.com/"]
-    }
-  });
+    dateModified: contentDate(page),
+    isPartOf: { "@id": WEBSITE_ID },
+    author: { "@id": PERSON_ID },
+    publisher: { "@id": PERSON_ID }
+  };
+  if (page.path === "/aziel/") {
+    webpage.additionalProperty = [
+      { "@type": "PropertyValue", name: "cap7_dns", value: "separate_from_public_icann" },
+      { "@type": "PropertyValue", name: "paid_satellite", value: "HELD" },
+      { "@type": "PropertyValue", name: "remain_off", value: "true" },
+      { "@type": "PropertyValue", name: "mesh_tracking", value: "off" },
+      { "@type": "PropertyValue", name: "indexing", value: "unconfirmed" },
+      { "@type": "PropertyValue", name: "live", value: "false" }
+    ];
+  }
+  const website = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": WEBSITE_ID,
+    name: "The Furnace Isn't Free",
+    url: `${CANONICAL_ORIGIN}/`,
+    publisher: { "@id": PERSON_ID }
+  };
+  const person = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": PERSON_ID,
+    name: "Aziel Eliab",
+    url: "https://www.azieleliab.com/",
+    sameAs: PERSON_SAME_AS,
+    subjectOf: SISTER_SUBJECTS
+  };
+  const graphs = [webpage, website, person];
+  if (page.jsonldExtra) graphs.push(page.jsonldExtra);
+  return graphs;
 }
 
 function feedback(id, tool) {
@@ -233,7 +293,8 @@ pages.push({
 
 pages.push({
   path: "/how-the-offer-works/",
-  title: "How a free furnace offer works | Allowance versus installed price",
+  title: "How Free-Furnace Offers Work | Installed Cost",
+  updated: "2026-11-05",
   description:
     "How an HVAC package allowance differs from a zero-cost installed furnace, and what to compare on an itemized estimate.",
   body: `<article class="wrap prose">
@@ -268,26 +329,26 @@ pages.push({
     mainEntity: [
       {
         "@type": "Question",
-        name: "Does a free furnace promotion mean the installed furnace costs nothing?",
+        name: "Does “free furnace” mean the installed furnace costs nothing?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Not by the headline alone. Compare the allowance, equipment price, labor, required modifications, and total installed price. Unknown figures should stay unknown."
+          text: "Not by the word alone. Read the allowance, the equipment price, the labor, the required modifications, and the total. Use the calculator with the figures from your quote. Leave unknown boxes blank."
         }
       },
       {
         "@type": "Question",
-        name: "Is HVAC installation labor usually four times the equipment price?",
+        name: "Is installation labor usually four times the equipment price?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "This site does not claim that. Examples discussed while the site was specified are claims to investigate, not a published industry average."
+          text: "This site does not say that. Notes from the project mentioned examples of about $4,000 to $6,000 in labor, sometimes near four times a basic furnace’s equipment price. Treat that as a claim to investigate with your own written numbers. There is no dataset here that would support “usually.”"
         }
       },
       {
         "@type": "Question",
-        name: "Do all free-furnace offers use the same entry-level furnace?",
+        name: "Do all free-furnace offers use the same entry-level model?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "No. The site says to require the manufacturer, model number, AFUE, capacity, staging, venting, and warranty from the written quote."
+          text: "No such claim is made here. Model numbers have to be read off the quote."
         }
       }
     ]
@@ -296,7 +357,8 @@ pages.push({
 
 pages.push({
   path: "/the-numbers/",
-  title: "Furnace installation cost calculator | What a free furnace allowance leaves",
+  title: "Furnace Cost Calculator | Equipment, Labor & Allowance",
+  updated: "2026-11-05",
   description:
     "Define MSRP, allowance, and installed cost, then calculate net equipment, labor ratio, and package difference without turning blanks into zero.",
   body: `<article class="wrap">
@@ -494,10 +556,10 @@ pages.push({
     mainEntity: [
       {
         "@type": "Question",
-        name: "Should I replace my furnace?",
+        name: "Should I replace my HVAC?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "This site cannot answer for a particular house and does not decide safety. Ask a qualified technician for written findings, measurements, repair and replacement scope, and total installed prices."
+          text: "This site cannot answer that for a particular house. A sensible choice depends on a written diagnosis, measurements, safety findings from a qualified person, compatibility, efficiency, parts, remaining life, and your priorities. Use the questions above, and get the answers in writing."
         }
       }
     ]
@@ -506,7 +568,8 @@ pages.push({
 
 pages.push({
   path: "/discount-reality-check/",
-  title: "Discount reality check | Reference price and HVAC promotion terms",
+  title: "HVAC Discount Reality Check | Offer Terms",
+  updated: "2026-11-05",
   description:
     "Check whether a furnace or AC promotional price names its reference, dates, exclusions, and restrictions. No deception ruling.",
   body: `<article class="wrap">
@@ -649,6 +712,7 @@ pages.push({
 pages.push({
   path: "/aziel/",
   title: "AZIEL | One ecosystem, multiple doors",
+  updated: "2026-11-05",
   description:
     "The Furnace Isn't Free is one public project in the Aziel Eliab ecosystem. Each linked door keeps its own purpose.",
   body: `<article class="wrap prose">
@@ -689,6 +753,8 @@ pages.push({
       <article class="door"><h3>Time to Unseal the Book</h3><p>A separate public project. It has its own subject. It does not provide HVAC advice, and this site does not describe its findings.</p><a class="btn" href="https://timetounsealthebook.net/">timetounsealthebook.net</a></article>
       <article class="door"><h3>The Furnace Isn't Free</h3><p>Consumer education about HVAC offer structure, quote transparency, and pricing claims. You are here.</p><a class="btn secondary" href="/">Current site</a></article>
     </div>
+    <h2>Deploy limits</h2>
+    <p>Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This door is not marked LIVE.</p>
   </article>`
 });
 
@@ -824,8 +890,7 @@ function fileFor(pagePath) {
 await mkdir(publicDir, { recursive: true });
 for (const page of pages) {
   if (!PATHS.includes(page.path)) throw new Error(`Missing path constant for ${page.path}`);
-  const graphs = [JSON.parse(pageJson(page.path, page.title, page.description))];
-  if (page.jsonldExtra) graphs.push(page.jsonldExtra);
+  const graphs = pageGraph(page);
   const html = layout({
     path: page.path,
     title: page.title,
@@ -856,8 +921,10 @@ await writeFile(path.join(publicDir, "checklist", "homeowner-checklist.txt"), ch
 
 const urls = PATHS.map((pagePath) => {
   const loc = pagePath === "/" ? `${CANONICAL_ORIGIN}/` : `${CANONICAL_ORIGIN}${pagePath}`;
+  const page = pages.find((item) => item.path === pagePath);
+  const lastmod = page ? contentDate(page) : REVIEWED;
   const priority = pagePath === "/" ? "1.0" : "0.8";
-  return `  <url><loc>${loc}</loc><lastmod>${REVIEWED}</lastmod><changefreq>monthly</changefreq><priority>${priority}</priority></url>`;
+  return `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod><changefreq>monthly</changefreq><priority>${priority}</priority></url>`;
 }).join("\n");
 await writeFile(
   path.join(publicDir, "sitemap.xml"),
@@ -878,6 +945,8 @@ Allow: /v1/stats
 Allow: /stats
 Allow: /api/usefulness
 Allow: /api/health
+Allow: /health
+Allow: /version
 Allow: /sitemap.xml
 Allow: /llms.txt
 Allow: /ai.txt
@@ -936,7 +1005,8 @@ const llms = `# The Furnace Isn't Free
 Author: Aziel Eliab
 Person @id: https://www.azieleliab.com/#aziel
 Canonical: ${CANONICAL_ORIGIN}/
-Alias: https://www.furnaceisntfree.com/ (301 to the canonical host when the Worker is deployed)
+Alias: https://www.furnaceisntfree.com/ (301 to canonical host; verified 2026-11-05)
+That 301 is the Worker response for GET and HEAD when this script receives the www host. Known HTML aliases such as /aziel fold into the same hop. A Cloudflare custom-domain bind is still required if public www is not attached to this Worker. This line is not an indexing claim.
 Subject: HVAC quote transparency, free-furnace promotions, furnace installation cost, repair-or-replace questions.
 This site does not name companies. It explains offer structure.
 It does not publish industry-average prices. Illustrative dollars are labeled fictional.
@@ -963,8 +1033,12 @@ POST /api/feedback stores a private usefulness receipt (yes/no, comment ≤ 256 
 JPEG path accepts image/jpeg only, with user attestation that the file is a written invoice, estimate, or offer, plus a redaction confirmation.
 The site does not OCR uploads.
 Corpus forwarding is off until CORPUS_INGEST_URL and CORPUS_INGEST_TOKEN are set. This file does not claim a live corpus write.
-GET /count and GET /v1/stats are the page-view counter.
+GET /count and GET /v1/stats are the page-view counter. GET /stats is that same JSON. The HTML totals page is /stats/.
 GET /api/usefulness is the public meter. Comments and images are not in that response.
+GET /api/health, GET /health, and GET /version report a build id plus the source base tip this draft branched from. They do not prove a deploy and they do not claim indexing.
+
+## Limits
+Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This file is not a LIVE claim.
 
 ## Sister doors
 Official cross-chain sister handles linked from /aziel. A link is not a deployment claim and not a catalog.
@@ -994,15 +1068,18 @@ const cite = {
   person: {
     "@context": "https://schema.org",
     "@type": "Person",
-    "@id": "https://www.azieleliab.com/#aziel",
+    "@id": PERSON_ID,
     name: "Aziel Eliab",
     url: "https://www.azieleliab.com/",
-    sameAs: ["https://www.azieleliab.com/#aziel", "https://www.azieleliab.com/"]
+    sameAs: PERSON_SAME_AS,
+    subjectOf: SISTER_SUBJECTS
   },
   work: {
     "@type": "WebSite",
+    "@id": WEBSITE_ID,
     name: "The Furnace Isn't Free",
-    url: `${CANONICAL_ORIGIN}/`
+    url: `${CANONICAL_ORIGIN}/`,
+    publisher: { "@id": PERSON_ID }
   },
   reviewed: REVIEWED,
   note: "One project in the Aziel Eliab ecosystem. This file does not restate other projects' catalogs, and it does not claim production DNS is live."
@@ -1036,10 +1113,14 @@ const openapi = {
     "/api/receipts": {
       get: { summary: "Private receipt export", responses: { 401: { description: "Token required" } } }
     },
-    "/api/health": { get: { summary: "Process health, not a deploy claim", responses: { 200: { description: "Health" } } } },
+    "/api/health": { get: { summary: "Build id and source base tip, not a deploy or indexing claim", responses: { 200: { description: "Health" } } } },
+    "/health": { get: { summary: "Alias of GET /api/health", responses: { 200: { description: "Health" } } } },
+    "/version": { get: { summary: "Alias of GET /api/health", responses: { 200: { description: "Health" } } } },
+    "/api/version": { get: { summary: "Alias of GET /api/health", responses: { 200: { description: "Health" } } } },
     "/api/contact": { post: { summary: "Private contact message", responses: { 200: { description: "Stored" } } } }
   }
 };
 await writeFile(path.join(publicDir, "openapi.json"), JSON.stringify(openapi, null, 2) + "\n");
+await writeSocialCard(path.join(publicDir, "images", "social-card.png"));
 
 console.log(`Rendered ${pages.length} pages into ${publicDir}`);

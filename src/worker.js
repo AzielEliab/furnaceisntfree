@@ -1,5 +1,5 @@
 import { handleRequest } from "../lib/api.mjs";
-import { ALIAS_HOST, CANONICAL_HOST } from "../lib/paths.mjs";
+import { canonicalRedirectUrl } from "../lib/paths.mjs";
 import { createKvStore } from "../lib/store-kv.mjs";
 import { createMemoryStore } from "../lib/store-memory.mjs";
 
@@ -11,20 +11,35 @@ function storeFor(env) {
   return memoryStore;
 }
 
+/** HTTPS responses only. max-age=31536000, no includeSubDomains, no preload. */
+function withTransportSecurity(response, request) {
+  const url = new URL(request.url);
+  if (url.protocol !== "https:") return response;
+  const headers = new Headers(response.headers);
+  headers.set("strict-transport-security", "max-age=31536000");
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
 export default {
   async fetch(request, env) {
-    const url = new URL(request.url);
-    if (url.hostname.toLowerCase() === ALIAS_HOST) {
-      url.hostname = CANONICAL_HOST;
-      url.protocol = "https:";
-      return Response.redirect(url.toString(), 301);
-    }
+    const redirectTo = canonicalRedirectUrl(request.url, request.method);
+    if (redirectTo) return withTransportSecurity(Response.redirect(redirectTo, 301), request);
     const response = await handleRequest(request, { store: storeFor(env), env });
-    if (response) return response;
-    if (env.ASSETS) return env.ASSETS.fetch(request);
-    return new Response("Not found", {
-      status: 404,
-      headers: { "content-type": "text/plain; charset=utf-8", "content-signal": "search=yes, ai-input=yes, ai-train=yes" }
-    });
+    if (response) return withTransportSecurity(response, request);
+    if (env.ASSETS) return withTransportSecurity(await env.ASSETS.fetch(request), request);
+    return withTransportSecurity(
+      new Response("Not found", {
+        status: 404,
+        headers: {
+          "content-type": "text/plain; charset=utf-8",
+          "content-signal": "search=yes, ai-input=yes, ai-train=yes"
+        }
+      }),
+      request
+    );
   }
 };

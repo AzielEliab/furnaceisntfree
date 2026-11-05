@@ -12,6 +12,8 @@ Allow: /v1/stats
 Allow: /stats
 Allow: /api/usefulness
 Allow: /api/health
+Allow: /health
+Allow: /version
 Allow: /sitemap.xml
 Allow: /llms.txt
 Allow: /ai.txt
