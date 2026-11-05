@@ -2,7 +2,7 @@
 
 Homeowner guide to HVAC offer structure: what a “free furnace” allowance covers, what installation still costs, and how to compare written quotes without ranking contractors.
 
-Canonical host used in code and metadata: `https://furnaceisntfree.com`. `www.furnaceisntfree.com` is an alias; the Worker redirects it to the apex. Production DNS is not deployed from this repository until a Cloudflare deploy for that hostname succeeds.
+Canonical host used in code and metadata: `https://furnaceisntfree.com`. `www.furnaceisntfree.com` is an alias. GET and HEAD 301 to the apex in one hop when this Worker receives the request, including a trailing slash on known HTML pages. The Worker runs before static assets so that redirect is not skipped. The www custom domain stays commented in `wrangler.toml`. Attaching that hostname is a Cloudflare bind, not something this repository can finish, and this tree does not deploy.
 
 ## Run locally
 
@@ -29,7 +29,7 @@ Preferred host is Cloudflare Workers with static assets, matching the other Azie
 2. Create a KV namespace and an R2 bucket. Uncomment `SITE_KV` and `UPLOADS` in `wrangler.toml` and paste the ids.
 3. Copy `.dev.vars.example` to `.dev.vars` and set `RECEIPT_READ_TOKEN`. Leave the corpus variables empty until the owner supplies a real ingest URL and token.
 4. Preview locally with `npm run cf:dev`.
-5. Uncomment the `furnaceisntfree.com` and `www.furnaceisntfree.com` routes in `wrangler.toml` only after that zone is on the same account.
+5. Uncomment the `furnaceisntfree.com` and `www.furnaceisntfree.com` routes in `wrangler.toml` only after that zone is on the same account. Leave them commented until an approved deploy. The www route is the custom-domain bind the Worker cannot create by itself.
 6. Deploy the whole site in one step: `npx wrangler deploy`. Do not publish a partial set of pages.
 
 A deploy is live only after `https://furnaceisntfree.com` responds with this site. A workers.dev preview is not that hostname. This repository does not claim a deploy until that command has succeeded.

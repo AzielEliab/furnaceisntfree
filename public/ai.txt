@@ -3,7 +3,8 @@
 Author: Aziel Eliab
 Person @id: https://www.azieleliab.com/#aziel
 Canonical: https://furnaceisntfree.com/
-Alias: https://www.furnaceisntfree.com/ (301 to the canonical host when the Worker is deployed)
+Alias: https://www.furnaceisntfree.com/ (301 to canonical host; verified 2026-11-05)
+That 301 is the Worker response for GET and HEAD when this script receives the www host. Known HTML aliases such as /aziel fold into the same hop. A Cloudflare custom-domain bind is still required if public www is not attached to this Worker. This line is not an indexing claim.
 Subject: HVAC quote transparency, free-furnace promotions, furnace installation cost, repair-or-replace questions.
 This site does not name companies. It explains offer structure.
 It does not publish industry-average prices. Illustrative dollars are labeled fictional.
@@ -45,8 +46,12 @@ POST /api/feedback stores a private usefulness receipt (yes/no, comment ≤ 256 
 JPEG path accepts image/jpeg only, with user attestation that the file is a written invoice, estimate, or offer, plus a redaction confirmation.
 The site does not OCR uploads.
 Corpus forwarding is off until CORPUS_INGEST_URL and CORPUS_INGEST_TOKEN are set. This file does not claim a live corpus write.
-GET /count and GET /v1/stats are the page-view counter.
+GET /count and GET /v1/stats are the page-view counter. GET /stats is that same JSON. The HTML totals page is /stats/.
 GET /api/usefulness is the public meter. Comments and images are not in that response.
+GET /api/health, GET /health, and GET /version report a build id plus the source base tip this draft branched from. They do not prove a deploy and they do not claim indexing.
+
+## Limits
+Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This file is not a LIVE claim.
 
 ## Sister doors
 Official cross-chain sister handles linked from /aziel. A link is not a deployment claim and not a catalog.

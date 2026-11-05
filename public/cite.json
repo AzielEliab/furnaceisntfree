@@ -15,13 +15,52 @@
     "url": "https://www.azieleliab.com/",
     "sameAs": [
       "https://www.azieleliab.com/#aziel",
-      "https://www.azieleliab.com/"
+      "https://www.azieleliab.com/",
+      "https://github.com/AzielEliab",
+      "https://x.com/AzielEliab"
+    ],
+    "subjectOf": [
+      {
+        "@type": "WebSite",
+        "name": "Aziel Corpus Library",
+        "url": "https://azielcorpuslibrary.net/"
+      },
+      {
+        "@type": "WebSite",
+        "name": "Godlock",
+        "url": "https://godlock.uk/"
+      },
+      {
+        "@type": "WebSite",
+        "name": "He Didn't Jump",
+        "url": "https://hedidntjump.com/"
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "name": "Aziel Runtime source",
+        "url": "https://github.com/AzielEliab/aziel-runtime",
+        "codeRepository": "https://github.com/AzielEliab/aziel-runtime"
+      },
+      {
+        "@type": "WebSite",
+        "name": "Aziel Runtime hosted page",
+        "url": "https://aziel-runtime.vibelock.workers.dev/"
+      },
+      {
+        "@type": "WebSite",
+        "name": "Time to Unseal the Book",
+        "url": "https://timetounsealthebook.net/"
+      }
     ]
   },
   "work": {
     "@type": "WebSite",
+    "@id": "https://furnaceisntfree.com/#website",
     "name": "The Furnace Isn't Free",
-    "url": "https://furnaceisntfree.com/"
+    "url": "https://furnaceisntfree.com/",
+    "publisher": {
+      "@id": "https://www.azieleliab.com/#aziel"
+    }
   },
   "reviewed": "2026-10-31",
   "note": "One project in the Aziel Eliab ecosystem. This file does not restate other projects' catalogs, and it does not claim production DNS is live."

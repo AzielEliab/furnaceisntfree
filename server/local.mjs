@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { handleRequest } from "../lib/api.mjs";
+import { canonicalRedirectUrl } from "../lib/paths.mjs";
 import { createFileStore } from "../lib/store-file.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -21,7 +22,8 @@ const MIME = {
   ".xml": "application/xml; charset=utf-8",
   ".webmanifest": "application/manifest+json",
   ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg"
+  ".jpeg": "image/jpeg",
+  ".png": "image/png"
 };
 
 function resolveFile(urlPath) {
@@ -66,6 +68,18 @@ function send(res, response) {
 const server = createServer(async (req, res) => {
   try {
     const method = req.method || "GET";
+    const hostHeader = req.headers.host || "127.0.0.1";
+    const redirectTo = canonicalRedirectUrl(`http://${hostHeader}${req.url}`, method);
+    if (redirectTo) {
+      res.writeHead(301, {
+        location: redirectTo,
+        "content-signal": "search=yes, ai-input=yes, ai-train=yes",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "no-referrer"
+      });
+      res.end();
+      return;
+    }
     const body =
       method === "GET" || method === "HEAD" ? undefined : await readRequestBody(req);
     const headers = new Headers();

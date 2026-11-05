@@ -95,7 +95,37 @@
     },
     "/api/health": {
       "get": {
-        "summary": "Process health, not a deploy claim",
+        "summary": "Build id and source base tip, not a deploy or indexing claim",
+        "responses": {
+          "200": {
+            "description": "Health"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Alias of GET /api/health",
+        "responses": {
+          "200": {
+            "description": "Health"
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "summary": "Alias of GET /api/health",
+        "responses": {
+          "200": {
+            "description": "Health"
+          }
+        }
+      }
+    },
+    "/api/version": {
+      "get": {
+        "summary": "Alias of GET /api/health",
         "responses": {
           "200": {
             "description": "Health"

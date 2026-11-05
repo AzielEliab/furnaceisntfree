@@ -8,7 +8,7 @@ npm test
 
 That command renders `public/` and runs `node --test test/*.test.mjs`.
 
-Last run during this build: 15 tests, 15 passed. The run also checks that public URLs use `https://furnaceisntfree.com` and that `www.furnaceisntfree.com` redirects to that apex.
+Last run during this build: 19 tests, 19 passed. The run checks that public URLs use `https://furnaceisntfree.com`, that GET and HEAD on `www.furnaceisntfree.com` 301 to the apex in one hop (including `/`, `/aziel`, `/aziel/`, `/robots.txt`, and `/sitemap.xml`), that known HTML aliases use 301, and that `/stats` stays JSON.
 
 Covered:
 

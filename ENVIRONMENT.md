@@ -6,7 +6,7 @@ No variable is required to run `npm start` or `npm test`. Secrets stay empty unt
 | --- | --- | --- | --- |
 | `PORT` | Local Node only | No | Listen port. Default `43127`. |
 | `HOST` | Local Node only | No | Bind address. Default `0.0.0.0`. |
-| `CANONICAL_ORIGIN` | Worker var and local env | No | Defaults to `https://furnaceisntfree.com`. Used in receipt URLs. `www.furnaceisntfree.com` redirects to this origin. |
+| `CANONICAL_ORIGIN` | Worker var and local env | No | Defaults to `https://furnaceisntfree.com`. Used in receipt URLs. GET and HEAD on `www.furnaceisntfree.com` 301 to this origin when the Worker receives the request. |
 | `SITE_KV` | Cloudflare KV binding | For durable counts | Page views, receipt index, usefulness totals. Not a string secret. |
 | `UPLOADS` | Cloudflare R2 binding | For private JPEGs in production | Invoice/estimate/offer bytes. Keep the bucket private. |
 | `RECEIPT_READ_TOKEN` | Secret | To export receipts | `Authorization: Bearer` for `GET /api/receipts` and `GET /api/receipts/{id}/image`. If unset, export stays 401. |
@@ -17,6 +17,10 @@ No variable is required to run `npm start` or `npm test`. Secrets stay empty unt
 | `CONTACT_FORWARD_TOKEN` | Secret | With the URL | Bearer token for the contact forward. |
 
 Wrangler preview reads `.dev.vars`. Production secrets should be set with `wrangler secret put`, not committed.
+
+HTTPS responses from the Worker send `Strict-Transport-Security: max-age=31536000`. The header does not include `includeSubDomains` or `preload`.
+
+`www.furnaceisntfree.com` reaches that 301 only if this Worker is the script for that hostname. `run_worker_first` is true so the script sees the Host before static assets. The custom-domain routes in `wrangler.toml` stay commented. Attaching the www hostname is a Cloudflare zone bind. This repository cannot do that bind, and it does not deploy.
 
 Local files:
 

@@ -6,13 +6,15 @@ These items are not guessed into a “live” state. Each one needs the owner be
 
 Canonical host in code, sitemap, canonical tags, and receipt URLs: `https://furnaceisntfree.com`.
 
-`www.furnaceisntfree.com` is the alias. The Worker responds to that host with a 301 to the apex. The routes in `wrangler.toml` stay commented until the Cloudflare zone is on the deploy account. `thefurnaceisntfree.com` is not a hostname this project uses.
+`www.furnaceisntfree.com` is the alias. For GET and HEAD, the Worker returns one 301 to the same apex path and query, and folds a known HTML alias such as `/aziel` into that same hop. `/stats` stays JSON. POST is not redirected. The routes in `wrangler.toml` stay commented. Binding `www.furnaceisntfree.com` as a custom domain is a Cloudflare zone action. Application code cannot attach it, and this change does not deploy or edit DNS. `thefurnaceisntfree.com` is not a hostname this project uses.
+
+A 5 November 2026 public read saw `https://www.furnaceisntfree.com/` return 200 with this site's apex canonical. That matches static assets answering before the Worker. `run_worker_first` is now true so a later deploy of this script can emit the 301 when the hostname already reaches this Worker. If www is on a different route, the commented custom domain still has to be attached on the owning account before the public host will redirect.
 
 ## Hosting credentials
 
 `npx wrangler deploy` was run on 31 October 2026 and failed before any upload. Wrangler’s message: “In a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work.” `wrangler whoami` also says it is not authenticated. There is no Wrangler OAuth file. `https://furnaceisntfree.com` is not live from this work.
 
-Public DNS for `furnaceisntfree.com` already uses Cloudflare nameservers (`mustafa.ns.cloudflare.com` and `virginia.ns.cloudflare.com`). `www.furnaceisntfree.com` has no public address yet. The token must belong to the account that owns that zone. A connected Workers list can see other scripts in an account, and it cannot upload this script or edit DNS.
+Public DNS for `furnaceisntfree.com` already uses Cloudflare nameservers (`mustafa.ns.cloudflare.com` and `virginia.ns.cloudflare.com`). The token must belong to the account that owns that zone. A connected Workers list can see other scripts in an account, and it cannot upload this script or edit DNS. This change does not submit Search Console, IndexNow, or DNS.
 
 Needed before `npx wrangler deploy` can attach the real host:
 
