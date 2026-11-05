@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { handleRequest } from "../lib/api.mjs";
+import { INDEXNOW_KEY, INDEXNOW_FILENAME, INDEXNOW_PATH } from "../lib/indexnow.mjs";
 import worker from "../src/worker.js";
 import { CANONICAL_HTML_PATH, PATHS, canonicalRedirectUrl } from "../lib/paths.mjs";
 import { createMemoryStore } from "../lib/store-memory.mjs";
@@ -16,6 +18,10 @@ import {
 } from "../public/js/engine.js";
 
 const publicDir = path.resolve("public");
+
+function gitHead() {
+  return execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim().toLowerCase();
+}
 
 function jpeg(width, height, minBytes = 0) {
   const heightHi = (height >> 8) & 255;
@@ -350,7 +356,16 @@ test("discovery files allow indexing signals and cite the person id", async () =
   const llms = await readFile(path.join(publicDir, "llms.txt"), "utf8");
   assert.match(llms, /max\(0, equipment price/);
   assert.equal(await readFile(path.join(publicDir, "ai.txt"), "utf8"), llms);
-  assert.match(llms, /Alias: https:\/\/www\.furnaceisntfree\.com\/ \(301 to canonical host; verified 2026-11-05\)/);
+  assert.match(llms, /Alias: https:\/\/www\.furnaceisntfree\.com\/ \(Worker 301 to https:\/\/furnaceisntfree\.com\/ when www reaches this script\)/);
+  assert.match(llms, /not a Search Console property check/);
+  assert.match(llms, /not a crawl confirmation/);
+  assert.doesNotMatch(llms, /verified/i);
+  assert.match(llms, new RegExp(`Public key file: https://furnaceisntfree.com/${INDEXNOW_KEY}\\.txt`));
+  assert.match(llms, /does not call IndexNow/);
+  assert.match(llms, /Indexing remains unconfirmed/);
+  assert.match(robots, new RegExp(`Allow: ${INDEXNOW_PATH.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
+  assert.match(robots, /does not submit URLs/);
+  assert.doesNotMatch(robots, /indexnow\.org/i);
   assert.match(llms, /Cap-7 mesh DNS and public ICANN/);
   assert.match(llms, /Paid satellite is HELD/);
   assert.match(llms, /Remain-OFF/);
@@ -416,11 +431,16 @@ test("www alias redirects to the apex host", async () => {
   const apex = await worker.fetch(new Request("https://furnaceisntfree.com/api/health"), {});
   assert.equal(apex.status, 200);
   const health = await apex.json();
+  const head = gitHead();
   assert.equal(health.deployed, false);
   assert.equal(health.indexing, "unconfirmed");
   assert.equal(health.mesh_tracking, false);
-  assert.equal(health.source_base_tip_short, "472bb7c4");
-  assert.equal(health.noted_vid, "87b12512");
+  assert.equal(health.source_base_tip, head);
+  assert.equal(health.source_base_tip_short, head.slice(0, 8));
+  assert.equal(health.noted_vid, null);
+  assert.equal(health.cloudflare_version_id, null);
+  assert.equal(health.source_captured, "git-rev-parse-HEAD");
+  assert.doesNotMatch(JSON.stringify(health), /472bb7c4|87b12512/);
   assert.equal(health.cap7_is_public_icann, false);
   assert.equal(health.paid_satellite, "HELD");
   assert.equal(health.remain_off, true);
@@ -486,8 +506,10 @@ test("/stats stays JSON and slash HTML aliases are permanent", async () => {
   const version = await handleRequest(new Request("https://furnaceisntfree.com/version"), { store, env: {} });
   assert.equal(version.status, 200);
   const versionBody = await version.json();
-  assert.equal(versionBody.build_id, "furnace-seo-index-draft");
+  const head = gitHead();
+  assert.equal(versionBody.build_id, `furnace-${head.slice(0, 12)}`);
   assert.equal(versionBody.deployed, false);
+  assert.equal(versionBody.indexing, "unconfirmed");
   const healthAlias = await handleRequest(new Request("https://furnaceisntfree.com/health"), { store, env: {} });
   assert.equal(healthAlias.status, 200);
   const plain = await worker.fetch(new Request("http://127.0.0.1/api/health"), {});
@@ -562,4 +584,89 @@ test("shared head, titles, person id, and social card", async () => {
   assert.match(robots, /User-agent: PerplexityBot\nAllow: \//);
   assert.match(robots, /User-agent: Google-Extended\nAllow: \//);
   assert.doesNotMatch(robots, /Disallow:\s*\/\s*$/m);
+});
+
+test("indexnow key is public text and is not submitted", async () => {
+  assert.match(INDEXNOW_KEY, /^[0-9a-f]{32}$/);
+  const disk = await readFile(path.join(publicDir, INDEXNOW_FILENAME), "utf8");
+  assert.equal(disk, INDEXNOW_KEY);
+  const response = await worker.fetch(new Request(`https://furnaceisntfree.com${INDEXNOW_PATH}`), {});
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("content-type"), "text/plain; charset=utf-8");
+  assert.equal(await response.text(), INDEXNOW_KEY);
+  const www = await worker.fetch(new Request(`https://www.furnaceisntfree.com${INDEXNOW_PATH}`), {});
+  assert.equal(www.status, 301);
+  assert.equal(www.headers.get("location"), `https://furnaceisntfree.com${INDEXNOW_PATH}`);
+  const openapi = JSON.parse(await readFile(path.join(publicDir, "openapi.json"), "utf8"));
+  assert.equal(openapi.paths[INDEXNOW_PATH].get.summary.includes("Does not submit URLs"), true);
+});
+
+test("health provenance uses the build tip and cloudflare version metadata", async () => {
+  const store = createMemoryStore();
+  const head = gitHead();
+  const paths = ["/api/health", "/health", "/version", "/api/version"];
+  for (const route of paths) {
+    const response = await handleRequest(new Request(`https://furnaceisntfree.com${route}`), { store, env: {} });
+    assert.equal(response.status, 200, route);
+    const body = await response.json();
+    assert.equal(body.source_base_tip, head, route);
+    assert.equal(body.deployed, false, route);
+    assert.equal(body.indexing, "unconfirmed", route);
+    assert.equal(body.noted_vid, null, route);
+    assert.equal(body.mesh_tracking, false, route);
+  }
+  const ray = await handleRequest(
+    new Request("https://furnaceisntfree.com/api/health", { headers: { "cf-ray": "230b030023ae2822-SJC" } }),
+    { store, env: {} }
+  );
+  const rayBody = await ray.json();
+  assert.equal(rayBody.deployed, false);
+  assert.equal(rayBody.noted_vid, null);
+  assert.equal(rayBody.cloudflare_version_id, null);
+  const local = await handleRequest(new Request("https://furnaceisntfree.com/api/health"), {
+    store,
+    env: { CF_VERSION_METADATA: { id: "local", tag: "", timestamp: "" }, SOURCE_BASE_TIP: "" }
+  });
+  const localBody = await local.json();
+  assert.equal(localBody.deployed, false);
+  assert.equal(localBody.noted_vid, null);
+  assert.equal(localBody.source_base_tip, head);
+  const ignored = await handleRequest(new Request("https://furnaceisntfree.com/api/health"), {
+    store,
+    env: { SOURCE_BASE_TIP: "SET_AT_COS_DEPLOY" }
+  });
+  assert.equal((await ignored.json()).source_base_tip, head);
+  const override = "0123456789abcdef0123456789abcdef01234567";
+  const overridden = await handleRequest(new Request("https://furnaceisntfree.com/api/version"), {
+    store,
+    env: { SOURCE_BASE_TIP: override }
+  });
+  const overriddenBody = await overridden.json();
+  assert.equal(overriddenBody.source_base_tip, override);
+  assert.equal(overriddenBody.source_base_tip_short, "01234567");
+  assert.equal(overriddenBody.source_captured, "env.SOURCE_BASE_TIP");
+  assert.equal(overriddenBody.build_id, "furnace-0123456789ab");
+  assert.equal(overriddenBody.deployed, false);
+  const versionId = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
+  const live = await handleRequest(new Request("https://furnaceisntfree.com/api/health"), {
+    store,
+    env: { CF_VERSION_METADATA: { id: versionId, tag: "production", timestamp: "2026-11-05T00:00:00.000Z" } }
+  });
+  const liveBody = await live.json();
+  assert.equal(liveBody.deployed, true);
+  assert.equal(liveBody.noted_vid, "aaaaaaaa");
+  assert.equal(liveBody.cloudflare_version_id, versionId);
+  assert.equal(liveBody.cloudflare_version_tag, "production");
+  assert.equal(liveBody.indexing, "unconfirmed");
+  assert.equal(liveBody.mesh_tracking, false);
+  assert.match(liveBody.note, /does not claim LIVE/);
+  const preview = await handleRequest(new Request("https://the-furnace-isnt-free.workers.dev/api/health"), {
+    store,
+    env: { CF_VERSION_METADATA: { id: versionId, tag: "", timestamp: "" } }
+  });
+  const previewBody = await preview.json();
+  assert.equal(previewBody.deployed, false);
+  assert.equal(previewBody.noted_vid, "aaaaaaaa");
+  assert.equal(previewBody.cloudflare_version_id, versionId);
+  assert.equal(previewBody.indexing, "unconfirmed");
 });

@@ -3,6 +3,8 @@
 # Do not treat this file as proof that any index has listed the site.
 # Canonical host: https://furnaceisntfree.com
 # Person: https://www.azieleliab.com/#aziel
+# IndexNow key file: https://furnaceisntfree.com/80eed0a6b524a05bdf7b07e287f6d12a.txt
+# keyLocation is that URL. The key is public by design. This file does not submit URLs and does not confirm indexing.
 
 User-agent: *
 Allow: /
@@ -19,6 +21,7 @@ Allow: /llms.txt
 Allow: /ai.txt
 Allow: /cite.json
 Allow: /openapi.json
+Allow: /80eed0a6b524a05bdf7b07e287f6d12a.txt
 Disallow: /api/receipts
 Disallow: /api/contact
 

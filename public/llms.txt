@@ -3,8 +3,8 @@
 Author: Aziel Eliab
 Person @id: https://www.azieleliab.com/#aziel
 Canonical: https://furnaceisntfree.com/
-Alias: https://www.furnaceisntfree.com/ (301 to canonical host; verified 2026-11-05)
-That 301 is the Worker response for GET and HEAD when this script receives the www host. Known HTML aliases such as /aziel fold into the same hop. A Cloudflare custom-domain bind is still required if public www is not attached to this Worker. This line is not an indexing claim.
+Alias: https://www.furnaceisntfree.com/ (Worker 301 to https://furnaceisntfree.com/ when www reaches this script)
+When GET or HEAD for www.furnaceisntfree.com reaches this Worker, the script responds 301 to the apex and keeps the path and query. Known HTML aliases such as /aziel fold into that same hop. This describes Worker behavior when www is attached to this script. It is not a Search Console property check, not a crawl confirmation, and not proof that public www is attached. If another route serves www, the 301 does not run.
 Subject: HVAC quote transparency, free-furnace promotions, furnace installation cost, repair-or-replace questions.
 This site does not name companies. It explains offer structure.
 It does not publish industry-average prices. Illustrative dollars are labeled fictional.
@@ -48,7 +48,11 @@ The site does not OCR uploads.
 Corpus forwarding is off until CORPUS_INGEST_URL and CORPUS_INGEST_TOKEN are set. This file does not claim a live corpus write.
 GET /count and GET /v1/stats are the page-view counter. GET /stats is that same JSON. The HTML totals page is /stats/.
 GET /api/usefulness is the public meter. Comments and images are not in that response.
-GET /api/health, GET /health, and GET /version report a build id plus the source base tip this draft branched from. They do not prove a deploy and they do not claim indexing.
+GET /api/health, GET /health, GET /version, and GET /api/version report the git revision captured when the bundle was built. When Cloudflare version metadata is present they also report that Worker version id. deployed is true only on furnaceisntfree.com when a real version id is present. Indexing stays unconfirmed. These routes do not ping IndexNow.
+
+## IndexNow
+Public key file: https://furnaceisntfree.com/80eed0a6b524a05bdf7b07e287f6d12a.txt
+The file body is the key. The Worker serves it as text/plain. Bing, Yandex, Seznam, and Naver can use that file to accept a later ping. This site does not call IndexNow and does not submit URLs. Indexing remains unconfirmed.
 
 ## Limits
 Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This file is not a LIVE claim.

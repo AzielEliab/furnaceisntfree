@@ -95,7 +95,7 @@
     },
     "/api/health": {
       "get": {
-        "summary": "Build id and source base tip, not a deploy or indexing claim",
+        "summary": "Git revision captured at build, plus the Cloudflare version id when that binding is present. Indexing stays unconfirmed.",
         "responses": {
           "200": {
             "description": "Health"
@@ -129,6 +129,16 @@
         "responses": {
           "200": {
             "description": "Health"
+          }
+        }
+      }
+    },
+    "/80eed0a6b524a05bdf7b07e287f6d12a.txt": {
+      "get": {
+        "summary": "IndexNow key file. Public by design. Does not submit URLs.",
+        "responses": {
+          "200": {
+            "description": "text/plain key"
           }
         }
       }
