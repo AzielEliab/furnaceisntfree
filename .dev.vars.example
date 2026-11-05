@@ -1,0 +1,10 @@
+# Copy to .dev.vars for `wrangler dev`. Never commit .dev.vars.
+# Leave a value empty if you do not have it yet.
+
+CANONICAL_ORIGIN=https://furnaceisntfree.com
+RECEIPT_READ_TOKEN=
+CORPUS_INGEST_URL=
+CORPUS_INGEST_TOKEN=
+CORPUS_FORWARD_IMAGES=false
+CONTACT_FORWARD_URL=
+CONTACT_FORWARD_TOKEN=

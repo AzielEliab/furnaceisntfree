@@ -1,0 +1,22 @@
+{
+  "name": "the-furnace-isnt-free",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Homeowner guide to HVAC offer structure, furnace allowances, and quote transparency.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/render-pages.mjs",
+    "start": "node scripts/render-pages.mjs && node server/local.mjs",
+    "test": "node scripts/render-pages.mjs && node --test test/*.test.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "cf:dev": "wrangler dev --port 43128",
+    "cf:deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.40.0"
+  },
+  "license": "UNLICENSED"
+}

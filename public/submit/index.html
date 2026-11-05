@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submit an HVAC offer privately</title>
+<meta name="description" content="Send a redacted furnace or AC offer for private review. Nothing is published unless you ask and a later review agrees. JPEG invoices only.">
+<meta name="author" content="Aziel Eliab">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://furnaceisntfree.com/submit/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/site.css">
+<meta property="og:title" content="Submit an HVAC offer privately">
+<meta property="og:description" content="Send a redacted furnace or AC offer for private review. Nothing is published unless you ask and a later review agrees. JPEG invoices only.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://furnaceisntfree.com/submit/">
+<meta name="theme-color" content="#123B57">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebPage","name":"Submit an HVAC offer privately","description":"Send a redacted furnace or AC offer for private review. Nothing is published unless you ask and a later review agrees. JPEG invoices only.","url":"https://furnaceisntfree.com/submit/","inLanguage":"en","dateModified":"2026-10-31","isPartOf":{"@type":"WebSite","name":"The Furnace Isn't Free","url":"https://furnaceisntfree.com/"},"author":{"@type":"Person","@id":"https://www.azieleliab.com/#aziel","name":"Aziel Eliab","url":"https://www.azieleliab.com/","sameAs":["https://www.azieleliab.com/#aziel","https://www.azieleliab.com/"]}}]</script>
+</head>
+<body data-page="/submit/">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="wordmark" href="/">
+      <span class="wm-kicker">furnaceisntfree.com</span>
+      <span class="wm-line">The Furnace</span>
+      <span class="wm-line">Isn't Free</span>
+    </a>
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <button type="button" class="nav-backdrop" aria-label="Close menu"></button>
+    <nav id="site-nav" class="site-nav" aria-label="Primary">
+      <button type="button" class="nav-close">Close</button>
+      <a href="/how-the-offer-works/">How the Offer Works</a><a href="/the-numbers/">The Numbers</a><a href="/compare-quotes/">Compare Quotes</a><a href="/checklist/">Checklist</a><a href="/evidence/">Evidence</a><a href="/about/">About</a><a href="/aziel/" class="aziel-link">AZIEL</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<article class="wrap">
+    <p class="kicker">Private by default</p>
+    <h1>Submit an offer</h1>
+    <div class="callout">
+      <p>Remove names, addresses, phone numbers, account numbers, signatures, barcodes, and other identifiers before you type or upload. Storage is for review of the offer structure. Raw submissions are not published. A request for later publication is not publication.</p>
+    </div>
+    <form id="submit-form" class="card" data-tool="submit-offer">
+      <div class="field"><label for="region">Region, optional and general</label><span class="help">State or metro is enough. Do not enter a street address.</span><input id="region" data-input="region" autocomplete="off"></div>
+      <div class="field"><label for="claim">Advertised claim, in your words</label><textarea id="claim" data-input="claim"></textarea></div>
+      <div class="field"><label for="model">Model numbers, if you are willing to share them</label><input id="model" data-input="model" autocomplete="off"></div>
+      <div class="field"><label for="sub-allowance">Allowance as written</label><input id="sub-allowance" data-input="allowance" data-money="true" inputmode="decimal" autocomplete="off"></div>
+      <div class="field"><label for="sub-labor">Labor as written</label><input id="sub-labor" data-input="labor" data-money="true" inputmode="decimal" autocomplete="off"></div>
+      <div class="field"><label for="sub-total">Total as written</label><input id="sub-total" data-input="total" data-money="true" inputmode="decimal" autocomplete="off"></div>
+      <div class="field"><label for="notes">Other scope notes</label><textarea id="notes" data-input="notes"></textarea></div>
+      <h2>Was sorting this offer useful?</h2>
+      <div class="choice"><label class="choice"><input type="radio" name="useful" value="yes"> Yes</label></div>
+      <div class="choice"><label class="choice"><input type="radio" name="useful" value="no"> No</label></div>
+      <div class="field"><label for="submit-comment">Comment, optional, 256 characters</label><textarea id="submit-comment" data-comment maxlength="256"></textarea><span class="char-count" data-count>0 / 256</span></div>
+      <div class="field">
+      <label for="submit-file">Optional JPEG of the written invoice, estimate, or offer</label>
+      <p class="help">This upload accepts a JPEG (.jpg) of your written invoice, estimate, or offer only. Other images are not allowed. The site does not read or OCR the picture. If this is the wrong file, remove it and continue without an upload. Remove names, addresses, phone numbers, account numbers, signatures, and barcodes before you choose a file.</p>
+      <input id="submit-file" data-jpeg type="file" accept="image/jpeg,.jpg,.jpeg">
+      <label class="choice"><input data-attest type="checkbox"> This is my written invoice, estimate, or offer.</label>
+      <label class="choice"><input data-redact type="checkbox"> I removed names, addresses, phone numbers, account numbers, signatures, and barcodes.</label>
+      <label class="choice"><input data-review type="checkbox"> I request review for possible publication later. Leave this unchecked to keep it private. Checking it does not publish anything.</label>
+    </div>
+    <p class="fine">The picture stays private. This site does not OCR it and does not claim to know what the pixels say beyond your confirmation.</p>
+      <button class="btn" type="submit">Save privately</button>
+      <p data-feedback-status role="status"></p>
+    </form>
+    <h2>Usefulness on this server</h2>
+    <div class="meter" data-meter><p>Loading counts…</p></div>
+  </article>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="ecosystem-line">Part of the Aziel Eliab ecosystem</p>
+    <p class="brand-line">We don't name companies. We name what they do.</p>
+    <ul class="footer-nav"><li><a href="/">Home</a></li><li><a href="/how-the-offer-works/">How the Offer Works</a></li><li><a href="/the-numbers/">The Numbers</a></li><li><a href="/compare-quotes/">Compare Quotes</a></li><li><a href="/checklist/">Checklist</a></li><li><a href="/repair-or-replace/">Repair or Replace</a></li><li><a href="/discount-reality-check/">Discount Reality Check</a></li><li><a href="/evidence/">Evidence and Method</a></li><li><a href="/submit/">Submit an Offer</a></li><li><a href="/aziel/">AZIEL</a></li><li><a href="/about/">About</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li><li><a href="/editorial/">Editorial disclosure</a></li><li><a href="/corrections/">Corrections</a></li><li><a href="/stats/">Stats</a></li></ul>
+    <p class="fine">Content reviewed 2026-10-31. Canonical host: furnaceisntfree.com. www.furnaceisntfree.com is an alias. This repository does not claim that the domain is deployed or that search engines have indexed it. First-party view counts live at <a href="/stats/">/stats</a> and <a href="/count">/count</a>.</p>
+  </div>
+</footer>
+<p class="print-only">Part of the Aziel Eliab ecosystem</p>
+<noscript><style>@media (max-width: 860px){ .site-nav{ display:flex !important; position:static; width:auto; } .nav-toggle,.nav-backdrop{ display:none !important; } }</style></noscript>
+<script type="module" src="/js/ui.js"></script>
+</body>
+</html>

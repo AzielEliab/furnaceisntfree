@@ -1,0 +1,62 @@
+# The Furnace Isn't Free
+
+Author: Aziel Eliab
+Person @id: https://www.azieleliab.com/#aziel
+Canonical: https://furnaceisntfree.com/
+Alias: https://www.furnaceisntfree.com/ (301 to the canonical host when the Worker is deployed)
+Subject: HVAC quote transparency, free-furnace promotions, furnace installation cost, repair-or-replace questions.
+This site does not name companies. It explains offer structure.
+It does not publish industry-average prices. Illustrative dollars are labeled fictional.
+It does not decide whether a furnace is safe.
+
+## Pages
+- https://furnaceisntfree.com/
+- https://furnaceisntfree.com/how-the-offer-works/
+- https://furnaceisntfree.com/the-numbers/
+- https://furnaceisntfree.com/compare-quotes/
+- https://furnaceisntfree.com/checklist/
+- https://furnaceisntfree.com/repair-or-replace/
+- https://furnaceisntfree.com/discount-reality-check/
+- https://furnaceisntfree.com/evidence/
+- https://furnaceisntfree.com/submit/
+- https://furnaceisntfree.com/aziel/
+- https://furnaceisntfree.com/about/
+- https://furnaceisntfree.com/privacy/
+- https://furnaceisntfree.com/terms/
+- https://furnaceisntfree.com/editorial/
+- https://furnaceisntfree.com/corrections/
+- https://furnaceisntfree.com/stats/
+
+## Calculator
+Blank money inputs stay unknown. Explicit 0 is zero.
+Net equipment after allowance = max(0, equipment price − allowance).
+Excess allowance above the equipment price is shown separately and is not applied to labor.
+Installation and additional = labor + materials/modifications + other required charges.
+Incremental installed furnace cost = net equipment after allowance + installation and additional.
+Labor-to-equipment ratio = labor ÷ equipment-only price only when equipment-only price > 0.
+Package difference = package total − AC-only comparison price, and is not inferred from the other lines.
+Fictional example (not a market average): equipment $1,500, allowance $1,500, labor $4,800, materials $900, other charges an explicit $0. Incremental installed furnace cost $5,700. Labor ratio 3.2× in that fiction only.
+
+## Quote comparison
+Up to three quotes. Missing fields are flagged. Contractors are not ranked.
+
+## Receipts
+POST /api/feedback stores a private usefulness receipt (yes/no, comment ≤ 256 characters, calculation snapshot, optional JPEG).
+JPEG path accepts image/jpeg only, with user attestation that the file is a written invoice, estimate, or offer, plus a redaction confirmation.
+The site does not OCR uploads.
+Corpus forwarding is off until CORPUS_INGEST_URL and CORPUS_INGEST_TOKEN are set. This file does not claim a live corpus write.
+GET /count and GET /v1/stats are the page-view counter.
+GET /api/usefulness is the public meter. Comments and images are not in that response.
+
+## Sister doors
+Official cross-chain sister handles linked from /aziel. A link is not a deployment claim and not a catalog.
+- https://www.azieleliab.com/
+- https://azielcorpuslibrary.net/
+- https://godlock.uk/
+- https://hedidntjump.com/
+- https://github.com/AzielEliab/aziel-runtime
+- https://aziel-runtime.vibelock.workers.dev/
+- https://timetounsealthebook.net/
+- https://furnaceisntfree.com/
+
+Indexing is requested. This document does not assert that any search engine has indexed the host.
