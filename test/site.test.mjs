@@ -375,21 +375,58 @@ test("discovery files allow indexing signals and cite the person id", async () =
     assert.ok(match, loc);
     return match[1];
   };
-  assert.equal(lastmod("https://furnaceisntfree.com/aziel/"), "2026-11-05");
+  assert.equal(lastmod("https://furnaceisntfree.com/aziel/"), "2026-11-06");
   assert.equal(lastmod("https://furnaceisntfree.com/the-numbers/"), "2026-11-05");
   assert.equal(lastmod("https://furnaceisntfree.com/how-the-offer-works/"), "2026-11-05");
   assert.equal(lastmod("https://furnaceisntfree.com/discount-reality-check/"), "2026-11-05");
-  assert.equal(lastmod("https://furnaceisntfree.com/"), "2026-10-31");
-  assert.equal(lastmod("https://furnaceisntfree.com/about/"), "2026-10-31");
+  assert.equal(lastmod("https://furnaceisntfree.com/"), "2026-11-06");
+  assert.equal(lastmod("https://furnaceisntfree.com/about/"), "2026-11-06");
   assert.equal(lastmod("https://furnaceisntfree.com/privacy/"), "2026-10-31");
   assert.equal(lastmod("https://furnaceisntfree.com/checklist/"), "2026-10-31");
   assert.ok(cite.person.sameAs.includes("https://github.com/AzielEliab"));
   assert.ok(cite.person.sameAs.includes("https://x.com/AzielEliab"));
-  for (const sister of ["https://godlock.uk/", "https://timetounsealthebook.net/", "https://azielcorpuslibrary.net/"]) {
-    assert.equal(cite.person.sameAs.includes(sister), false, sister);
+  assert.deepEqual(cite.person.sameAs, [
+    "https://www.azieleliab.com/#aziel",
+    "https://www.azieleliab.com/",
+    "https://github.com/AzielEliab",
+    "https://x.com/AzielEliab"
+  ]);
+  assert.deepEqual(cite.also_known_as, cite.person.alternateName);
+  assert.deepEqual(cite.person.alternateName, [
+    "AzielEliab",
+    "azieleliab",
+    "Aziel Elroi Eliab",
+    "The Revealer of the Sealed",
+    "Elias Artista"
+  ]);
+  assert.deepEqual(cite.roles, cite.person.jobTitle);
+  const sisterUrls = [
+    "https://www.azieleliab.com/",
+    "https://azielcorpuslibrary.net/",
+    "https://godlock.uk/",
+    "https://hedidntjump.com/",
+    "https://github.com/AzielEliab/aziel-runtime",
+    "https://aziel-runtime.vibelock.workers.dev/",
+    "https://timetounsealthebook.net/",
+    "https://furnaceisntfree.com/"
+  ];
+  assert.deepEqual(cite.relatedLink, sisterUrls);
+  for (const sister of sisterUrls) {
+    assert.equal(cite.person.sameAs.includes(sister) && sister !== "https://www.azieleliab.com/", false, sister);
     assert.ok(cite.person.subjectOf.some((item) => item.url === sister), sister);
+    assert.ok(llms.includes(`- ${sister}`), sister);
   }
+  assert.equal(cite.person.sameAs.includes("https://furnaceisntfree.com/"), false);
+  assert.equal(cite.person.sameAs.includes("https://github.com/AzielEliab/aziel-runtime"), false);
+  assert.equal(cite.person.subjectOf.find((item) => item.url === "https://furnaceisntfree.com/")["@id"], "https://furnaceisntfree.com/#website");
   assert.equal(cite.person.sameAs.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"), false);
+  assert.match(llms, /Also known as: AzielEliab; azieleliab; Aziel Elroi Eliab; The Revealer of the Sealed; Elias Artista/);
+  assert.match(llms, /Roles already used for this person: digital rights activist, software developer, engineer, designer, philosopher, author, artist, researcher/);
+  assert.match(llms, /The other doors are not sameAs and not new @id values/);
+  assert.doesNotMatch(llms, /15:20|Levitical|Aziel Systems|living researcher/i);
+  assert.match(robots, /Also known as \(same person, not new hosts\): AzielEliab, azieleliab, Aziel Elroi Eliab, The Revealer of the Sealed, Elias Artista/);
+  assert.match(robots, /User-agent: GPTBot\nAllow: \//);
+  assert.match(robots, /User-agent: ClaudeBot\nAllow: \//);
 });
 
 test("aziel doors are the official sister set", async () => {
@@ -416,7 +453,7 @@ test("aziel doors are the official sister set", async () => {
   assert.match(visible, /Cap-7 mesh DNS and public ICANN/);
   const data = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   const pageNode = data.find((node) => node["@type"] === "WebPage");
-  assert.equal(pageNode.dateModified, "2026-11-05");
+  assert.equal(pageNode.dateModified, "2026-11-06");
   assert.equal(pageNode.additionalProperty.find((item) => item.name === "paid_satellite").value, "HELD");
   assert.equal(pageNode.additionalProperty.find((item) => item.name === "mesh_tracking").value, "off");
   assert.equal(pageNode.additionalProperty.find((item) => item.name === "cap7_dns").value, "separate_from_public_icann");
@@ -546,7 +583,34 @@ test("shared head, titles, person id, and social card", async () => {
     assert.equal(website["@id"], "https://furnaceisntfree.com/#website");
     assert.equal(website.publisher["@id"], "https://www.azieleliab.com/#aziel");
     assert.equal(person["@id"], "https://www.azieleliab.com/#aziel");
+    assert.deepEqual(
+      data.filter((node) => node["@type"] === "Person").map((node) => node["@id"]),
+      ["https://www.azieleliab.com/#aziel"]
+    );
+    assert.deepEqual(person.alternateName, [
+      "AzielEliab",
+      "azieleliab",
+      "Aziel Elroi Eliab",
+      "The Revealer of the Sealed",
+      "Elias Artista"
+    ]);
+    assert.deepEqual(person.sameAs, [
+      "https://www.azieleliab.com/#aziel",
+      "https://www.azieleliab.com/",
+      "https://github.com/AzielEliab",
+      "https://x.com/AzielEliab"
+    ]);
+    assert.equal(person.sameAs.includes("https://furnaceisntfree.com/"), false);
+    assert.equal(person.sameAs.includes("https://github.com/AzielEliab/aziel-runtime"), false);
     for (const sister of sisters) assert.equal(person.sameAs.some((url) => url.includes(sister)), false, file);
+    const visible = html.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<head[\s\S]*?<\/head>/g, " ");
+    assert.equal(visible.includes("The Revealer of the Sealed"), false, file);
+    assert.equal(visible.includes("Elias Artista"), false, file);
+    assert.equal(visible.includes("Aziel Elroi Eliab"), false, file);
+    assert.equal(visible.includes("15:20"), false, file);
+    assert.equal(visible.includes("Levitical"), false, file);
+    assert.equal(visible.includes("Aziel Systems"), false, file);
+    assert.doesNotMatch(visible, /living researcher/i, file);
     assert.equal(data.some((node) => node["@type"] === "Organization"), false);
     assert.equal(data.some((node) => node["@type"] === "Book"), false);
     const pageNode = data.find((node) => node["@type"] === "WebPage" || node["@type"] === "AboutPage");
@@ -559,6 +623,38 @@ test("shared head, titles, person id, and social card", async () => {
   assert.match(about, /"@type":"AboutPage"/);
   const home = await readFile(path.join(publicDir, "index.html"), "utf8");
   assert.doesNotMatch(home, /AboutPage/);
+  for (const file of ["index.html", "about/index.html", "aziel/index.html"]) {
+    const html = await readFile(path.join(publicDir, file), "utf8");
+    const data = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+    const pageNode = data.find((node) => node["@type"] === "WebPage" || node["@type"] === "AboutPage");
+    const faq = data.find((node) => node["@id"] && String(node["@id"]).endsWith("#person-faq"));
+    assert.ok(faq, file);
+    assert.equal(faq.about["@id"], "https://www.azieleliab.com/#aziel");
+    assert.deepEqual(pageNode.relatedLink, [
+      "https://www.azieleliab.com/",
+      "https://azielcorpuslibrary.net/",
+      "https://godlock.uk/",
+      "https://hedidntjump.com/",
+      "https://github.com/AzielEliab/aziel-runtime",
+      "https://aziel-runtime.vibelock.workers.dev/",
+      "https://timetounsealthebook.net/",
+      "https://furnaceisntfree.com/"
+    ]);
+    const visible = html.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<head[\s\S]*?<\/head>/g, " ");
+    for (const question of faq.mainEntity) {
+      assert.equal(visible.includes(question.name), false, question.name);
+      assert.equal(visible.includes("The Revealer of the Sealed"), false, file);
+    }
+    if (file !== "index.html") {
+      assert.equal(pageNode.mainEntity["@id"], "https://www.azieleliab.com/#aziel");
+      assert.equal(pageNode.about["@id"], "https://www.azieleliab.com/#aziel");
+    } else {
+      assert.equal(pageNode.mainEntity, undefined);
+    }
+  }
+  const numbersPage = await readFile(path.join(publicDir, "the-numbers/index.html"), "utf8");
+  assert.equal(numbersPage.includes("#person-faq"), false);
+  assert.equal(numbersPage.includes("relatedLink"), false);
   const numbers = await readFile(path.join(publicDir, "the-numbers/index.html"), "utf8");
   assert.match(numbers, /<title>Furnace Cost Calculator \| Equipment, Labor &amp; Allowance<\/title>/);
   const offer = await readFile(path.join(publicDir, "how-the-offer-works/index.html"), "utf8");

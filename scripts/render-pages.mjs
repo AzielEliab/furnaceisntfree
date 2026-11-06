@@ -18,7 +18,25 @@ const PERSON_SAME_AS = [
   "https://github.com/AzielEliab",
   "https://x.com/AzielEliab"
 ];
+const PERSON_ALIASES = [
+  "AzielEliab",
+  "azieleliab",
+  "Aziel Elroi Eliab",
+  "The Revealer of the Sealed",
+  "Elias Artista"
+];
+const PERSON_ROLES = [
+  "digital rights activist",
+  "software developer",
+  "engineer",
+  "designer",
+  "philosopher",
+  "author",
+  "artist",
+  "researcher"
+];
 const SISTER_SUBJECTS = [
+  { "@type": "WebSite", name: "Aziel Eliab", url: "https://www.azieleliab.com/" },
   { "@type": "WebSite", name: "Aziel Corpus Library", url: "https://azielcorpuslibrary.net/" },
   { "@type": "WebSite", name: "Godlock", url: "https://godlock.uk/" },
   { "@type": "WebSite", name: "He Didn't Jump", url: "https://hedidntjump.com/" },
@@ -29,8 +47,11 @@ const SISTER_SUBJECTS = [
     codeRepository: "https://github.com/AzielEliab/aziel-runtime"
   },
   { "@type": "WebSite", name: "Aziel Runtime hosted page", url: "https://aziel-runtime.vibelock.workers.dev/" },
-  { "@type": "WebSite", name: "Time to Unseal the Book", url: "https://timetounsealthebook.net/" }
+  { "@type": "WebSite", name: "Time to Unseal the Book", url: "https://timetounsealthebook.net/" },
+  { "@type": "WebSite", "@id": WEBSITE_ID, name: "The Furnace Isn't Free", url: `${CANONICAL_ORIGIN}/` }
 ];
+const SISTER_LINKS = SISTER_SUBJECTS.map((item) => item.url);
+const IDENTITY_PATHS = new Set(["/", "/about/", "/aziel/"]);
 
 const NAV = [
   ["How the Offer Works", "/how-the-offer-works/"],
@@ -88,6 +109,10 @@ function layout({ path: pagePath, title, description, body, robots = "index,foll
 <meta name="author" content="Aziel Eliab">
 <meta name="robots" content="${robots}">
 <link rel="canonical" href="${canonical}">
+<link rel="author" href="${PERSON_ID}">
+<link rel="me" href="https://www.azieleliab.com/">
+<link rel="me" href="https://github.com/AzielEliab">
+<link rel="me" href="https://x.com/AzielEliab">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/site.css">
 <meta property="og:title" content="${esc(title)}">
@@ -146,6 +171,43 @@ function contentDate(page) {
   return page.updated || REVIEWED;
 }
 
+function identityFaq(url) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${url}#person-faq`,
+    url,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": PERSON_ID },
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Who publishes The Furnace Isn't Free?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Aziel Eliab, one person, @id ${PERSON_ID}. The same person is also known as ${PERSON_ALIASES.join(", ")}. Those names are not separate people and not additional @id values.`
+        }
+      },
+      {
+        "@type": "Question",
+        name: "What roles are already used for Aziel Eliab?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Roles already used for this same person: ${PERSON_ROLES.join(", ")}.`
+        }
+      },
+      {
+        "@type": "Question",
+        name: "Which official sister sites are linked from this project?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${SISTER_LINKS.join(", ")}. These are subjectOf and relatedLink values for the one person. They are not extra Person @id values. https://www.azieleliab.com/ remains that person's url and a sameAs profile. The other doors are not sameAs. A link is not a deployment claim.`
+        }
+      }
+    ]
+  };
+}
+
 function pageGraph(page) {
   const url = page.path === "/" ? `${CANONICAL_ORIGIN}/` : `${CANONICAL_ORIGIN}${page.path}`;
   const type = page.path === "/about/" ? "AboutPage" : "WebPage";
@@ -172,12 +234,18 @@ function pageGraph(page) {
       { "@type": "PropertyValue", name: "live", value: "false" }
     ];
   }
+  if (IDENTITY_PATHS.has(page.path)) webpage.relatedLink = SISTER_LINKS;
+  if (page.path === "/about/" || page.path === "/aziel/") {
+    webpage.mainEntity = { "@id": PERSON_ID };
+    webpage.about = { "@id": PERSON_ID };
+  }
   const website = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": WEBSITE_ID,
     name: "The Furnace Isn't Free",
     url: `${CANONICAL_ORIGIN}/`,
+    author: { "@id": PERSON_ID },
     publisher: { "@id": PERSON_ID }
   };
   const person = {
@@ -185,11 +253,16 @@ function pageGraph(page) {
     "@type": "Person",
     "@id": PERSON_ID,
     name: "Aziel Eliab",
+    alternateName: PERSON_ALIASES,
+    jobTitle: PERSON_ROLES,
+    description:
+      "Aziel Eliab is one person, identified at https://www.azieleliab.com/#aziel, and the author of The Furnace Isn't Free. alternateName lists other names of this same person. subjectOf lists official sister sites.",
     url: "https://www.azieleliab.com/",
     sameAs: PERSON_SAME_AS,
     subjectOf: SISTER_SUBJECTS
   };
   const graphs = [webpage, website, person];
+  if (IDENTITY_PATHS.has(page.path)) graphs.push(identityFaq(url));
   if (page.jsonldExtra) graphs.push(page.jsonldExtra);
   return graphs;
 }
@@ -236,6 +309,7 @@ const pages = [];
 pages.push({
   path: "/",
   title: "The Furnace Isn't Free | HVAC quote transparency",
+  updated: "2026-11-06",
   description:
     "A homeowner guide to free-furnace promotions. Separate the headline from equipment price, allowance, installation, and the total installed price.",
   body: `<section class="hero">
@@ -713,7 +787,7 @@ pages.push({
 pages.push({
   path: "/aziel/",
   title: "AZIEL | One ecosystem, multiple doors",
-  updated: "2026-11-05",
+  updated: "2026-11-06",
   description:
     "The Furnace Isn't Free is one public project in the Aziel Eliab ecosystem. Each linked door keeps its own purpose.",
   body: `<article class="wrap prose">
@@ -762,6 +836,7 @@ pages.push({
 pages.push({
   path: "/about/",
   title: "About and contact | The Furnace Isn't Free",
+  updated: "2026-11-06",
   description:
     "Who publishes this HVAC quote guide, how to ask for a correction, and what the site does not do.",
   body: `<article class="wrap prose">
@@ -937,6 +1012,9 @@ const robots = `# The Furnace Isn't Free — open crawl
 # Do not treat this file as proof that any index has listed the site.
 # Canonical host: ${CANONICAL_ORIGIN}
 # Person: https://www.azieleliab.com/#aziel
+# Also known as (same person, not new hosts): ${PERSON_ALIASES.join(", ")}
+# sameAs profiles stay the person node, https://www.azieleliab.com/, https://github.com/AzielEliab, and https://x.com/AzielEliab
+# Sister doors are subjectOf and relatedLink in /cite.json, /llms.txt, and the identity pages. This file does not submit URLs and does not confirm indexing.
 # IndexNow key file: ${CANONICAL_ORIGIN}/${INDEXNOW_KEY}.txt
 # keyLocation is that URL. The key is public by design. This file does not submit URLs and does not confirm indexing.
 
@@ -1008,6 +1086,11 @@ const llms = `# The Furnace Isn't Free
 
 Author: Aziel Eliab
 Person @id: https://www.azieleliab.com/#aziel
+Also known as: ${PERSON_ALIASES.join("; ")}
+These names are one person. They are not extra @id values and not extra sites.
+sameAs: ${PERSON_SAME_AS.join(", ")}
+Roles already used for this person: ${PERSON_ROLES.join(", ")}
+Sister doors are subjectOf and relatedLink. Person sameAs stays the person node, the azieleliab.com home, GitHub AzielEliab, and x.com/AzielEliab. The other doors are not sameAs and not new @id values.
 Canonical: ${CANONICAL_ORIGIN}/
 Alias: https://www.furnaceisntfree.com/ (Worker 301 to ${CANONICAL_ORIGIN}/ when www reaches this script)
 When GET or HEAD for www.furnaceisntfree.com reaches this Worker, the script responds 301 to the apex and keeps the path and query. Known HTML aliases such as /aziel fold into that same hop. This describes Worker behavior when www is attached to this script. It is not a Search Console property check, not a crawl confirmation, and not proof that public www is attached. If another route serves www, the 301 does not run.
@@ -1050,14 +1133,9 @@ Cap-7 mesh DNS and public ICANN registration are different systems. Paid satelli
 
 ## Sister doors
 Official cross-chain sister handles linked from /aziel. A link is not a deployment claim and not a catalog.
-- https://www.azieleliab.com/
-- https://azielcorpuslibrary.net/
-- https://godlock.uk/
-- https://hedidntjump.com/
-- https://github.com/AzielEliab/aziel-runtime
-- https://aziel-runtime.vibelock.workers.dev/
-- https://timetounsealthebook.net/
-- ${CANONICAL_ORIGIN}/
+Each door below is subjectOf and relatedLink of the one person https://www.azieleliab.com/#aziel.
+https://www.azieleliab.com/ is also that person's url and a sameAs profile. The other doors are not Person sameAs entries.
+${SISTER_LINKS.map((url) => `- ${url}`).join("\n")}
 
 Indexing is requested. This document does not assert that any search engine has indexed the host.
 `;
@@ -1073,11 +1151,18 @@ const cite = {
   alias: "https://www.furnaceisntfree.com/",
   title: "The Furnace Isn't Free",
   about: "Homeowner education on HVAC offer structure, furnace allowances, and quote transparency.",
+  also_known_as: PERSON_ALIASES,
+  roles: PERSON_ROLES,
+  relatedLink: SISTER_LINKS,
   person: {
     "@context": "https://schema.org",
     "@type": "Person",
     "@id": PERSON_ID,
     name: "Aziel Eliab",
+    alternateName: PERSON_ALIASES,
+    jobTitle: PERSON_ROLES,
+    description:
+      "Aziel Eliab is one person, identified at https://www.azieleliab.com/#aziel, and the author of The Furnace Isn't Free. alternateName lists other names of this same person. subjectOf lists official sister sites.",
     url: "https://www.azieleliab.com/",
     sameAs: PERSON_SAME_AS,
     subjectOf: SISTER_SUBJECTS
@@ -1087,10 +1172,11 @@ const cite = {
     "@id": WEBSITE_ID,
     name: "The Furnace Isn't Free",
     url: `${CANONICAL_ORIGIN}/`,
+    author: { "@id": PERSON_ID },
     publisher: { "@id": PERSON_ID }
   },
   reviewed: REVIEWED,
-  note: "One project in the Aziel Eliab ecosystem. This file does not restate other projects' catalogs, and it does not claim production DNS is live."
+  note: "One project in the Aziel Eliab ecosystem. Person @id is the single person node. alternateName values are that same person. subjectOf and relatedLink are sister doors. https://www.azieleliab.com/ is both the person url and a sameAs profile. The other doors are not sameAs. This file does not restate other projects' catalogs, and it does not claim production DNS is live."
 };
 await writeFile(path.join(publicDir, "cite.json"), JSON.stringify(cite, null, 2) + "\n");
 

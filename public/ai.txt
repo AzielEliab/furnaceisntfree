@@ -2,6 +2,11 @@
 
 Author: Aziel Eliab
 Person @id: https://www.azieleliab.com/#aziel
+Also known as: AzielEliab; azieleliab; Aziel Elroi Eliab; The Revealer of the Sealed; Elias Artista
+These names are one person. They are not extra @id values and not extra sites.
+sameAs: https://www.azieleliab.com/#aziel, https://www.azieleliab.com/, https://github.com/AzielEliab, https://x.com/AzielEliab
+Roles already used for this person: digital rights activist, software developer, engineer, designer, philosopher, author, artist, researcher
+Sister doors are subjectOf and relatedLink. Person sameAs stays the person node, the azieleliab.com home, GitHub AzielEliab, and x.com/AzielEliab. The other doors are not sameAs and not new @id values.
 Canonical: https://furnaceisntfree.com/
 Alias: https://www.furnaceisntfree.com/ (Worker 301 to https://furnaceisntfree.com/ when www reaches this script)
 When GET or HEAD for www.furnaceisntfree.com reaches this Worker, the script responds 301 to the apex and keeps the path and query. Known HTML aliases such as /aziel fold into that same hop. This describes Worker behavior when www is attached to this script. It is not a Search Console property check, not a crawl confirmation, and not proof that public www is attached. If another route serves www, the 301 does not run.
@@ -59,6 +64,8 @@ Cap-7 mesh DNS and public ICANN registration are different systems. Paid satelli
 
 ## Sister doors
 Official cross-chain sister handles linked from /aziel. A link is not a deployment claim and not a catalog.
+Each door below is subjectOf and relatedLink of the one person https://www.azieleliab.com/#aziel.
+https://www.azieleliab.com/ is also that person's url and a sameAs profile. The other doors are not Person sameAs entries.
 - https://www.azieleliab.com/
 - https://azielcorpuslibrary.net/
 - https://godlock.uk/

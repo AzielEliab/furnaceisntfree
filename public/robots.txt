@@ -3,6 +3,9 @@
 # Do not treat this file as proof that any index has listed the site.
 # Canonical host: https://furnaceisntfree.com
 # Person: https://www.azieleliab.com/#aziel
+# Also known as (same person, not new hosts): AzielEliab, azieleliab, Aziel Elroi Eliab, The Revealer of the Sealed, Elias Artista
+# sameAs profiles stay the person node, https://www.azieleliab.com/, https://github.com/AzielEliab, and https://x.com/AzielEliab
+# Sister doors are subjectOf and relatedLink in /cite.json, /llms.txt, and the identity pages. This file does not submit URLs and does not confirm indexing.
 # IndexNow key file: https://furnaceisntfree.com/80eed0a6b524a05bdf7b07e287f6d12a.txt
 # keyLocation is that URL. The key is public by design. This file does not submit URLs and does not confirm indexing.
 
