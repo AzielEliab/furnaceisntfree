@@ -29,6 +29,16 @@ run_worker_first = true
 
 [vars]
 CANONICAL_ORIGIN = "https://furnaceisntfree.com"
+# Cos placeholder. Leave this empty in git. Do not commit a SHA here.
+# scripts/write-build-provenance.mjs records git HEAD into the bundle
+# (npm test, npm run build, and the [build] command before wrangler deploy).
+# Workers Builds injects WORKERS_CI_COMMIT_SHA into the build environment;
+# the script uses git HEAD first, then that variable.
+# A runtime value is used only when it is 40 hex characters. This empty
+# string is ignored, so a hand-written label cannot go stale in this file.
+# Override only when the build machine has no git checkout:
+#   npx wrangler deploy --var SOURCE_BASE_TIP:<40-hex-sha>
+SOURCE_BASE_TIP = ""
 
 # Custom domains stay commented. Binding www.furnaceisntfree.com is a Cloudflare
 # zone action. Application code cannot attach that hostname, and this file is not
@@ -43,3 +53,18 @@ CANONICAL_ORIGIN = "https://furnaceisntfree.com"
 # pattern = "www.furnaceisntfree.com"
 # custom_domain = true
 CORPUS_FORWARD_IMAGES = "false"
+
+# Cloudflare Worker version id, tag, and timestamp.
+# Present on a deployed version. Local dev does not supply a version UUID.
+# CF-Ray is a per-request id and is not this version id.
+[version_metadata]
+binding = "CF_VERSION_METADATA"
+
+# wrangler deploy and wrangler dev run this before bundling.
+# Workers Builds does not copy this block into the dashboard build command.
+# npx wrangler deploy still runs it. If a pipeline bundles without wrangler,
+# set that build command to: node scripts/write-build-provenance.mjs
+# This block does not deploy the Worker.
+[build]
+command = "node scripts/write-build-provenance.mjs"
+watch_dir = ["src", "public", "scripts"]

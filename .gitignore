@@ -1,4 +1,5 @@
 node_modules/
+lib/build.generated.mjs
 .wrangler/
 .dev.vars
 data/

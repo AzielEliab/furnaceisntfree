@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { CANONICAL_ORIGIN, PATHS } from "../lib/paths.mjs";
+import { INDEXNOW_KEY, INDEXNOW_FILENAME, INDEXNOW_PATH } from "../lib/indexnow.mjs";
+import { CANONICAL_HOST, CANONICAL_ORIGIN, PATHS } from "../lib/paths.mjs";
 import { jpegRefuseCopy, QUOTE_FIELDS } from "../public/js/engine.js";
 import { writeSocialCard } from "./social-card.mjs";
 
@@ -936,6 +937,8 @@ const robots = `# The Furnace Isn't Free — open crawl
 # Do not treat this file as proof that any index has listed the site.
 # Canonical host: ${CANONICAL_ORIGIN}
 # Person: https://www.azieleliab.com/#aziel
+# IndexNow key file: ${CANONICAL_ORIGIN}/${INDEXNOW_KEY}.txt
+# keyLocation is that URL. The key is public by design. This file does not submit URLs and does not confirm indexing.
 
 User-agent: *
 Allow: /
@@ -952,6 +955,7 @@ Allow: /llms.txt
 Allow: /ai.txt
 Allow: /cite.json
 Allow: /openapi.json
+Allow: ${INDEXNOW_PATH}
 Disallow: /api/receipts
 Disallow: /api/contact
 
@@ -1005,8 +1009,8 @@ const llms = `# The Furnace Isn't Free
 Author: Aziel Eliab
 Person @id: https://www.azieleliab.com/#aziel
 Canonical: ${CANONICAL_ORIGIN}/
-Alias: https://www.furnaceisntfree.com/ (301 to canonical host; verified 2026-11-05)
-That 301 is the Worker response for GET and HEAD when this script receives the www host. Known HTML aliases such as /aziel fold into the same hop. A Cloudflare custom-domain bind is still required if public www is not attached to this Worker. This line is not an indexing claim.
+Alias: https://www.furnaceisntfree.com/ (Worker 301 to ${CANONICAL_ORIGIN}/ when www reaches this script)
+When GET or HEAD for www.furnaceisntfree.com reaches this Worker, the script responds 301 to the apex and keeps the path and query. Known HTML aliases such as /aziel fold into that same hop. This describes Worker behavior when www is attached to this script. It is not a Search Console property check, not a crawl confirmation, and not proof that public www is attached. If another route serves www, the 301 does not run.
 Subject: HVAC quote transparency, free-furnace promotions, furnace installation cost, repair-or-replace questions.
 This site does not name companies. It explains offer structure.
 It does not publish industry-average prices. Illustrative dollars are labeled fictional.
@@ -1035,7 +1039,11 @@ The site does not OCR uploads.
 Corpus forwarding is off until CORPUS_INGEST_URL and CORPUS_INGEST_TOKEN are set. This file does not claim a live corpus write.
 GET /count and GET /v1/stats are the page-view counter. GET /stats is that same JSON. The HTML totals page is /stats/.
 GET /api/usefulness is the public meter. Comments and images are not in that response.
-GET /api/health, GET /health, and GET /version report a build id plus the source base tip this draft branched from. They do not prove a deploy and they do not claim indexing.
+GET /api/health, GET /health, GET /version, and GET /api/version report the git revision captured when the bundle was built. When Cloudflare version metadata is present they also report that Worker version id. deployed is true only on ${CANONICAL_HOST} when a real version id is present. Indexing stays unconfirmed. These routes do not ping IndexNow.
+
+## IndexNow
+Public key file: ${CANONICAL_ORIGIN}/${INDEXNOW_KEY}.txt
+The file body is the key. The Worker serves it as text/plain. Bing, Yandex, Seznam, and Naver can use that file to accept a later ping. This site does not call IndexNow and does not submit URLs. Indexing remains unconfirmed.
 
 ## Limits
 Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This file is not a LIVE claim.
@@ -1113,14 +1121,26 @@ const openapi = {
     "/api/receipts": {
       get: { summary: "Private receipt export", responses: { 401: { description: "Token required" } } }
     },
-    "/api/health": { get: { summary: "Build id and source base tip, not a deploy or indexing claim", responses: { 200: { description: "Health" } } } },
+    "/api/health": {
+      get: {
+        summary: "Git revision captured at build, plus the Cloudflare version id when that binding is present. Indexing stays unconfirmed.",
+        responses: { 200: { description: "Health" } }
+      }
+    },
     "/health": { get: { summary: "Alias of GET /api/health", responses: { 200: { description: "Health" } } } },
     "/version": { get: { summary: "Alias of GET /api/health", responses: { 200: { description: "Health" } } } },
     "/api/version": { get: { summary: "Alias of GET /api/health", responses: { 200: { description: "Health" } } } },
+    [INDEXNOW_PATH]: {
+      get: {
+        summary: "IndexNow key file. Public by design. Does not submit URLs.",
+        responses: { 200: { description: "text/plain key" } }
+      }
+    },
     "/api/contact": { post: { summary: "Private contact message", responses: { 200: { description: "Stored" } } } }
   }
 };
 await writeFile(path.join(publicDir, "openapi.json"), JSON.stringify(openapi, null, 2) + "\n");
+await writeFile(path.join(publicDir, INDEXNOW_FILENAME), INDEXNOW_KEY);
 await writeSocialCard(path.join(publicDir, "images", "social-card.png"));
 
 console.log(`Rendered ${pages.length} pages into ${publicDir}`);

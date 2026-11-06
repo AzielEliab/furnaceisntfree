@@ -15,8 +15,12 @@ No variable is required to run `npm start` or `npm test`. Secrets stay empty unt
 | `CORPUS_FORWARD_IMAGES` | Var | No | `true` attaches JPEG bytes to the corpus payload. Default `false` (hash and size only). |
 | `CONTACT_FORWARD_URL` | Secret or var | No | Optional forward for the private contact form. |
 | `CONTACT_FORWARD_TOKEN` | Secret | With the URL | Bearer token for the contact forward. |
+| `SOURCE_BASE_TIP` | Worker var, empty in git | No | Runtime override for the git SHA reported by `/api/health`. Used only when the value is 40 hex characters. The empty placeholder in `wrangler.toml` is ignored. Do not commit a SHA. |
+| `CF_VERSION_METADATA` | Version metadata binding | On Cloudflare | Worker version id, tag, and timestamp. `noted_vid` is the first 8 hex characters of that id. `CF-Ray` is not this id. |
 
 Wrangler preview reads `.dev.vars`. Production secrets should be set with `wrangler secret put`, not committed.
+
+`/api/health`, `/health`, `/version`, and `/api/version` read the commit captured by `scripts/write-build-provenance.mjs` when the bundle is built. `npm test`, `npm run build`, and `wrangler deploy` run that script. It prefers `git rev-parse HEAD`, then `WORKERS_CI_COMMIT_SHA`, then `CF_PAGES_COMMIT_SHA`, then a 40-hex `SOURCE_BASE_TIP` in the build environment. `lib/build.generated.mjs` is gitignored so a committed SHA cannot go stale. `deployed` is true only when the version metadata id is a UUID and the request host is `furnaceisntfree.com`. Indexing stays `unconfirmed`. The IndexNow key file is `https://furnaceisntfree.com/80eed0a6b524a05bdf7b07e287f6d12a.txt`. Nothing in this repository calls IndexNow.
 
 HTTPS responses from the Worker send `Strict-Transport-Security: max-age=31536000`. The header does not include `includeSubDomains` or `preload`.
 

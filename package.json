@@ -8,12 +8,12 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "node scripts/render-pages.mjs",
-    "start": "node scripts/render-pages.mjs && node server/local.mjs",
-    "test": "node scripts/render-pages.mjs && node --test test/*.test.mjs",
+    "build": "node scripts/write-build-provenance.mjs && node scripts/render-pages.mjs",
+    "start": "node scripts/write-build-provenance.mjs && node scripts/render-pages.mjs && node server/local.mjs",
+    "test": "node scripts/write-build-provenance.mjs && node scripts/render-pages.mjs && node --test test/*.test.mjs",
     "check:links": "node scripts/check-links.mjs",
-    "cf:dev": "wrangler dev --port 43128",
-    "cf:deploy": "wrangler deploy"
+    "cf:dev": "node scripts/write-build-provenance.mjs && wrangler dev --port 43128",
+    "cf:deploy": "node scripts/write-build-provenance.mjs && wrangler deploy"
   },
   "devDependencies": {
     "wrangler": "^4.40.0"
