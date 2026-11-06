@@ -2,11 +2,88 @@
 
 Author: Aziel Eliab
 Person @id: https://www.azieleliab.com/#aziel
-Also known as: AzielEliab; azieleliab; Aziel Elroi Eliab; The Revealer of the Sealed; Elias Artista
+Also known as:
+- Aziel Elroi Eliab
+- AzielEliab
+- azieleliab
+- The Revealer of the Sealed
+- Elias Artista
+- AzielElroiEliab
+- The Revealer of The Sealed
+- Revealer of The Sealed
+- עזיאל
+- עֲזִיאֵל
+- אל ראי
+- אֵל רֳאִי
+- אלרועי
+- אליאב
+- אֱלִיאָב
+- עזיאל אל ראי אליאב
+- עזיאל אלרועי אליאב
+- Aziell
+- Azeil
+- Azial
+- Azeel
+- Asiel
+- Asziel
+- Az'iel
+- Azi-el
+- Aziél
+- Azíel
+- El Roi
+- El-Roi
+- ElRoi
+- Elro'i
+- Elroei
+- Elroey
+- El-Ro'i
+- Eli'ab
+- Eliáb
+- Elyab
+- Eliav
+- Eliabb
+- Aziel Eliab
+- aziel eliab
+- Aziel_Eliab
+- Aziel-Elroi-Eliab
+- EliasArtista
+- Aziel Eliah
+- Aziel Elijah
+- Aziel Elia
+- Asiel Eliab
+- Azael Eliab
+- Azial Eliab
+- Aziel Eilab
+- Aziel Elyab
+- Aziel Elieab
+- Aziel Eliabb
+- Aziel Eliaab
+- Aziel Elaib
+- Aziel-Eliab
+- Aziel Elroy Eliab
+- Aziel El-Roi Eliab
+- Aziel El Roi Eliab
+- Aziel Elroie Eliab
+- Aziel Elroei Eliab
+- Aziel Eliab Elroi
 These names are one person. They are not extra @id values and not extra sites.
-sameAs: https://www.azieleliab.com/#aziel, https://www.azieleliab.com/, https://github.com/AzielEliab, https://x.com/AzielEliab
+sameAs:
+- https://www.azieleliab.com/#aziel
+- https://www.azieleliab.com/
+- https://www.azieleliab.com/runtime/
+- https://azielcorpuslibrary.net/
+- https://godlock.uk/
+- https://hedidntjump.com/
+- https://github.com/AzielEliab/aziel-runtime
+- https://aziel-runtime.vibelock.workers.dev/
+- https://timetounsealthebook.net/
+- https://furnaceisntfree.com/
+- https://github.com/AzielEliab
+- https://github.com/azieltherevealerofthesealed-arch
+- https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
+- https://x.com/AzielEliab
 Roles already used for this person: digital rights activist, software developer, engineer, designer, philosopher, author, artist, researcher
-Sister doors are subjectOf and relatedLink. Person sameAs stays the person node, the azieleliab.com home, GitHub AzielEliab, and x.com/AzielEliab. The other doors are not sameAs and not new @id values.
+Official hubs are sameAs on that one person. They are not extra @id values.
 Canonical: https://furnaceisntfree.com/
 Alias: https://www.furnaceisntfree.com/ (Worker 301 to https://furnaceisntfree.com/ when www reaches this script)
 When GET or HEAD for www.furnaceisntfree.com reaches this Worker, the script responds 301 to the apex and keeps the path and query. Known HTML aliases such as /aziel fold into that same hop. This describes Worker behavior when www is attached to this script. It is not a Search Console property check, not a crawl confirmation, and not proof that public www is attached. If another route serves www, the 301 does not run.
@@ -62,11 +139,17 @@ The file body is the key. The Worker serves it as text/plain. Bing, Yandex, Sezn
 ## Limits
 Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This file is not a LIVE claim.
 
+## Tip
+On 2026-11-06, production /health reported source_base_tip_short d47caa6d and noted_vid 6a781b04.
+Earlier Cos label 472bb7c4 / 87b12512 was not that response and is not called live.
+Health reports the git commit captured when the bundle was built. Indexing is unconfirmed. This file is not a deploy.
+
 ## Sister doors
-Official cross-chain sister handles linked from /aziel. A link is not a deployment claim and not a catalog.
-Each door below is subjectOf and relatedLink of the one person https://www.azieleliab.com/#aziel.
-https://www.azieleliab.com/ is also that person's url and a sameAs profile. The other doors are not Person sameAs entries.
+Official hubs linked from /aziel, plus Softwares https://www.azieleliab.com/runtime/, both GitHub accounts, and Glama aziel-runtime.
+A link is not a deployment claim and not a catalog.
+Each hub below is subjectOf and sameAs of the one person https://www.azieleliab.com/#aziel. None of these is an extra @id.
 - https://www.azieleliab.com/
+- https://www.azieleliab.com/runtime/
 - https://azielcorpuslibrary.net/
 - https://godlock.uk/
 - https://hedidntjump.com/

@@ -1,0 +1,14 @@
+/person.jsonld
+  Content-Type: application/ld+json; charset=utf-8
+
+/identity.jsonld
+  Content-Type: application/ld+json; charset=utf-8
+
+/graph.jsonld
+  Content-Type: application/ld+json; charset=utf-8
+
+/who-is
+  Content-Type: text/plain; charset=utf-8
+
+/who-is-aziel-eliab.txt
+  Content-Type: text/plain; charset=utf-8

@@ -12,18 +12,70 @@ const PERSON_ID = "https://www.azieleliab.com/#aziel";
 const WEBSITE_ID = `${CANONICAL_ORIGIN}/#website`;
 const SOCIAL_IMAGE = `${CANONICAL_ORIGIN}/images/social-card.png`;
 const SOCIAL_ALT = "The Furnace Isn't Free, a homeowner guide to HVAC offer structure";
-const PERSON_SAME_AS = [
-  PERSON_ID,
-  "https://www.azieleliab.com/",
-  "https://github.com/AzielEliab",
-  "https://x.com/AzielEliab"
-];
 const PERSON_ALIASES = [
+  "Aziel Elroi Eliab",
   "AzielEliab",
   "azieleliab",
-  "Aziel Elroi Eliab",
   "The Revealer of the Sealed",
-  "Elias Artista"
+  "Elias Artista",
+  "AzielElroiEliab",
+  "The Revealer of The Sealed",
+  "Revealer of The Sealed",
+  "עזיאל",
+  "עֲזִיאֵל",
+  "אל ראי",
+  "אֵל רֳאִי",
+  "אלרועי",
+  "אליאב",
+  "אֱלִיאָב",
+  "עזיאל אל ראי אליאב",
+  "עזיאל אלרועי אליאב",
+  "Aziell",
+  "Azeil",
+  "Azial",
+  "Azeel",
+  "Asiel",
+  "Asziel",
+  "Az'iel",
+  "Azi-el",
+  "Aziél",
+  "Azíel",
+  "El Roi",
+  "El-Roi",
+  "ElRoi",
+  "Elro'i",
+  "Elroei",
+  "Elroey",
+  "El-Ro'i",
+  "Eli'ab",
+  "Eliáb",
+  "Elyab",
+  "Eliav",
+  "Eliabb",
+  "Aziel Eliab",
+  "aziel eliab",
+  "Aziel_Eliab",
+  "Aziel-Elroi-Eliab",
+  "EliasArtista",
+  "Aziel Eliah",
+  "Aziel Elijah",
+  "Aziel Elia",
+  "Asiel Eliab",
+  "Azael Eliab",
+  "Azial Eliab",
+  "Aziel Eilab",
+  "Aziel Elyab",
+  "Aziel Elieab",
+  "Aziel Eliabb",
+  "Aziel Eliaab",
+  "Aziel Elaib",
+  "Aziel-Eliab",
+  "Aziel Elroy Eliab",
+  "Aziel El-Roi Eliab",
+  "Aziel El Roi Eliab",
+  "Aziel Elroie Eliab",
+  "Aziel Elroei Eliab",
+  "Aziel Eliab Elroi"
 ];
 const PERSON_ROLES = [
   "digital rights activist",
@@ -37,6 +89,7 @@ const PERSON_ROLES = [
 ];
 const SISTER_SUBJECTS = [
   { "@type": "WebSite", name: "Aziel Eliab", url: "https://www.azieleliab.com/" },
+  { "@type": "WebSite", name: "Aziel Runtime", url: "https://www.azieleliab.com/runtime/" },
   { "@type": "WebSite", name: "Aziel Corpus Library", url: "https://azielcorpuslibrary.net/" },
   { "@type": "WebSite", name: "Godlock", url: "https://godlock.uk/" },
   { "@type": "WebSite", name: "He Didn't Jump", url: "https://hedidntjump.com/" },
@@ -51,6 +104,35 @@ const SISTER_SUBJECTS = [
   { "@type": "WebSite", "@id": WEBSITE_ID, name: "The Furnace Isn't Free", url: `${CANONICAL_ORIGIN}/` }
 ];
 const SISTER_LINKS = SISTER_SUBJECTS.map((item) => item.url);
+const PERSON_SAME_AS = [
+  PERSON_ID,
+  ...SISTER_LINKS,
+  "https://github.com/AzielEliab",
+  "https://github.com/azieltherevealerofthesealed-arch",
+  "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+  "https://x.com/AzielEliab"
+];
+const PERSON_DESCRIPTION =
+  "Aziel Eliab is one person, @id https://www.azieleliab.com/#aziel, and the author of The Furnace Isn't Free. alternateName lists other names of this same person already published on the official hubs, including Hebrew forms and common misspellings. sameAs lists those hubs, both GitHub accounts, Glama aziel-runtime, Softwares at https://www.azieleliab.com/runtime/, and this site. Those URLs are not extra @id values.";
+const TIP_OBSERVATION = {
+  observed_on: "2026-11-06",
+  production_source_base_tip_short: "d47caa6d",
+  production_noted_vid: "6a781b04",
+  earlier_cos_label_not_live: "472bb7c4",
+  earlier_version_prefix_not_live: "87b12512",
+  indexing: "unconfirmed",
+  note: "Production /health on that date reported d47caa6d and 6a781b04. The earlier Cos label is not that response and is not called live. This file does not deploy. Indexing is unconfirmed."
+};
+const MACHINE_PATHS = [
+  "/person.jsonld",
+  "/identity.jsonld",
+  "/graph.jsonld",
+  "/who-is",
+  "/who-is-aziel-eliab.txt",
+  "/cite.json",
+  "/llms.txt",
+  "/ai.txt"
+];
 const IDENTITY_PATHS = new Set(["/", "/about/", "/aziel/"]);
 
 const NAV = [
@@ -111,7 +193,10 @@ function layout({ path: pagePath, title, description, body, robots = "index,foll
 <link rel="canonical" href="${canonical}">
 <link rel="author" href="${PERSON_ID}">
 <link rel="me" href="https://www.azieleliab.com/">
+<link rel="me" href="https://www.azieleliab.com/runtime/">
 <link rel="me" href="https://github.com/AzielEliab">
+<link rel="me" href="https://github.com/azieltherevealerofthesealed-arch">
+<link rel="me" href="https://glama.ai/mcp/servers/AzielEliab/aziel-runtime">
 <link rel="me" href="https://x.com/AzielEliab">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/site.css">
@@ -171,6 +256,98 @@ function contentDate(page) {
   return page.updated || REVIEWED;
 }
 
+function personNode() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": PERSON_ID,
+    name: "Aziel Eliab",
+    additionalName: "Elroi",
+    alternateName: PERSON_ALIASES,
+    jobTitle: PERSON_ROLES,
+    hasOccupation: PERSON_ROLES.map((name) => ({ "@type": "Occupation", name })),
+    description: PERSON_DESCRIPTION,
+    disambiguatingDescription:
+      "One person. Every alternateName refers to https://www.azieleliab.com/#aziel. This site does not add a second person.",
+    url: "https://www.azieleliab.com/",
+    sameAs: PERSON_SAME_AS,
+    subjectOf: SISTER_SUBJECTS,
+    relatedLink: PERSON_SAME_AS.filter((url) => url !== PERSON_ID),
+    knowsLanguage: ["en", "he"],
+    mainEntityOfPage: `${CANONICAL_ORIGIN}/who-is`
+  };
+}
+
+function graphDocument() {
+  const person = personNode();
+  delete person["@context"];
+  const faq = identityFaq(`${CANONICAL_ORIGIN}/who-is`);
+  delete faq["@context"];
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      person,
+      {
+        "@type": "WebSite",
+        "@id": WEBSITE_ID,
+        name: "The Furnace Isn't Free",
+        url: `${CANONICAL_ORIGIN}/`,
+        author: { "@id": PERSON_ID },
+        publisher: { "@id": PERSON_ID }
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${CANONICAL_ORIGIN}/who-is#webpage`,
+        url: `${CANONICAL_ORIGIN}/who-is`,
+        name: "Who is Aziel Eliab",
+        about: { "@id": PERSON_ID },
+        mainEntity: { "@id": PERSON_ID },
+        isPartOf: { "@id": WEBSITE_ID },
+        relatedLink: SISTER_LINKS
+      },
+      faq
+    ]
+  };
+}
+
+function whoIsText() {
+  return [
+    "Who is Aziel Eliab",
+    "",
+    `Person @id: ${PERSON_ID}`,
+    "One person. Names below are alternateName values of that same @id. They are not extra people and not extra @id values.",
+    "This furnace site explains HVAC offer structure. It does not restate other projects' catalogs.",
+    "",
+    "Name: Aziel Eliab",
+    "additionalName: Elroi",
+    "Also known as:",
+    ...PERSON_ALIASES.map((name) => `- ${name}`),
+    "",
+    `Roles already used for this person: ${PERSON_ROLES.join(", ")}.`,
+    "",
+    "sameAs:",
+    ...PERSON_SAME_AS.map((url) => `- ${url}`),
+    "",
+    "subjectOf hubs, also listed in sameAs:",
+    ...SISTER_LINKS.map((url) => `- ${url}`),
+    "",
+    "Machine files:",
+    ...MACHINE_PATHS.map((machinePath) => `- ${CANONICAL_ORIGIN}${machinePath}`),
+    "",
+    "Tip:",
+    "On 2026-11-06, production /health reported source_base_tip_short d47caa6d and noted_vid 6a781b04.",
+    "Earlier Cos label 472bb7c4 / 87b12512 was not that response and is not called live.",
+    "Health reports the git commit captured when the bundle was built. Indexing is unconfirmed. This file is not a deploy.",
+    "",
+    "Limits:",
+    "Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off.",
+    "Growth-ON: search, AI input, and AI train are allowed.",
+    "www.furnaceisntfree.com 301s to the apex when the request reaches this Worker. That is not a Search Console property check.",
+    "This file does not call IndexNow and does not submit URLs.",
+    ""
+  ].join("\n");
+}
+
 function identityFaq(url) {
   return {
     "@context": "https://schema.org",
@@ -185,7 +362,7 @@ function identityFaq(url) {
         name: "Who publishes The Furnace Isn't Free?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Aziel Eliab, one person, @id ${PERSON_ID}. The same person is also known as ${PERSON_ALIASES.join(", ")}. Those names are not separate people and not additional @id values.`
+          text: `Aziel Eliab, one person, @id ${PERSON_ID}. alternateName on this Person node is the name lattice already published on the official hubs, including Aziel Elroi Eliab, Elias Artista, The Revealer of The Sealed, Hebrew forms, and common misspellings. Those names are not separate people and not additional @id values.`
         }
       },
       {
@@ -201,7 +378,7 @@ function identityFaq(url) {
         name: "Which official sister sites are linked from this project?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: `${SISTER_LINKS.join(", ")}. These are subjectOf and relatedLink values for the one person. They are not extra Person @id values. https://www.azieleliab.com/ remains that person's url and a sameAs profile. The other doors are not sameAs. A link is not a deployment claim.`
+          text: `${PERSON_SAME_AS.join(", ")}. Official hubs are sameAs and subjectOf for the one person. They are not extra Person @id values. A link is not a deployment claim.`
         }
       }
     ]
@@ -248,19 +425,7 @@ function pageGraph(page) {
     author: { "@id": PERSON_ID },
     publisher: { "@id": PERSON_ID }
   };
-  const person = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "@id": PERSON_ID,
-    name: "Aziel Eliab",
-    alternateName: PERSON_ALIASES,
-    jobTitle: PERSON_ROLES,
-    description:
-      "Aziel Eliab is one person, identified at https://www.azieleliab.com/#aziel, and the author of The Furnace Isn't Free. alternateName lists other names of this same person. subjectOf lists official sister sites.",
-    url: "https://www.azieleliab.com/",
-    sameAs: PERSON_SAME_AS,
-    subjectOf: SISTER_SUBJECTS
-  };
+  const person = personNode();
   const graphs = [webpage, website, person];
   if (IDENTITY_PATHS.has(page.path)) graphs.push(identityFaq(url));
   if (page.jsonldExtra) graphs.push(page.jsonldExtra);
@@ -995,13 +1160,19 @@ We don't name companies. We name what they do.
 await mkdir(path.join(publicDir, "checklist"), { recursive: true });
 await writeFile(path.join(publicDir, "checklist", "homeowner-checklist.txt"), checklistText);
 
-const urls = PATHS.map((pagePath) => {
-  const loc = pagePath === "/" ? `${CANONICAL_ORIGIN}/` : `${CANONICAL_ORIGIN}${pagePath}`;
-  const page = pages.find((item) => item.path === pagePath);
-  const lastmod = page ? contentDate(page) : REVIEWED;
-  const priority = pagePath === "/" ? "1.0" : "0.8";
-  return `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod><changefreq>monthly</changefreq><priority>${priority}</priority></url>`;
-}).join("\n");
+const urls = [
+  ...PATHS.map((pagePath) => {
+    const loc = pagePath === "/" ? `${CANONICAL_ORIGIN}/` : `${CANONICAL_ORIGIN}${pagePath}`;
+    const page = pages.find((item) => item.path === pagePath);
+    const lastmod = page ? contentDate(page) : REVIEWED;
+    const priority = pagePath === "/" ? "1.0" : "0.8";
+    return `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod><changefreq>monthly</changefreq><priority>${priority}</priority></url>`;
+  }),
+  ...MACHINE_PATHS.map((machinePath) => {
+    const priority = machinePath === "/cite.json" || machinePath === "/llms.txt" || machinePath === "/ai.txt" ? "0.6" : "0.8";
+    return `  <url><loc>${CANONICAL_ORIGIN}${machinePath}</loc><lastmod>2026-11-06</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
+  })
+].join("\n");
 await writeFile(
   path.join(publicDir, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`
@@ -1012,9 +1183,9 @@ const robots = `# The Furnace Isn't Free — open crawl
 # Do not treat this file as proof that any index has listed the site.
 # Canonical host: ${CANONICAL_ORIGIN}
 # Person: https://www.azieleliab.com/#aziel
-# Also known as (same person, not new hosts): ${PERSON_ALIASES.join(", ")}
-# sameAs profiles stay the person node, https://www.azieleliab.com/, https://github.com/AzielEliab, and https://x.com/AzielEliab
-# Sister doors are subjectOf and relatedLink in /cite.json, /llms.txt, and the identity pages. This file does not submit URLs and does not confirm indexing.
+# alternateName lattice, including Aziel Elroi Eliab, Elias Artista, The Revealer of The Sealed, Hebrew forms, and misspellings: /person.jsonld
+# sameAs: that person node, official hubs, both GitHub accounts, Glama aziel-runtime, Softwares /runtime/, x.com/AzielEliab, and this site. See /person.jsonld.
+# This file does not submit URLs and does not confirm indexing.
 # IndexNow key file: ${CANONICAL_ORIGIN}/${INDEXNOW_KEY}.txt
 # keyLocation is that URL. The key is public by design. This file does not submit URLs and does not confirm indexing.
 
@@ -1032,6 +1203,11 @@ Allow: /sitemap.xml
 Allow: /llms.txt
 Allow: /ai.txt
 Allow: /cite.json
+Allow: /person.jsonld
+Allow: /identity.jsonld
+Allow: /graph.jsonld
+Allow: /who-is
+Allow: /who-is-aziel-eliab.txt
 Allow: /openapi.json
 Allow: ${INDEXNOW_PATH}
 Disallow: /api/receipts
@@ -1086,11 +1262,13 @@ const llms = `# The Furnace Isn't Free
 
 Author: Aziel Eliab
 Person @id: https://www.azieleliab.com/#aziel
-Also known as: ${PERSON_ALIASES.join("; ")}
+Also known as:
+${PERSON_ALIASES.map((name) => `- ${name}`).join("\n")}
 These names are one person. They are not extra @id values and not extra sites.
-sameAs: ${PERSON_SAME_AS.join(", ")}
+sameAs:
+${PERSON_SAME_AS.map((url) => `- ${url}`).join("\n")}
 Roles already used for this person: ${PERSON_ROLES.join(", ")}
-Sister doors are subjectOf and relatedLink. Person sameAs stays the person node, the azieleliab.com home, GitHub AzielEliab, and x.com/AzielEliab. The other doors are not sameAs and not new @id values.
+Official hubs are sameAs on that one person. They are not extra @id values.
 Canonical: ${CANONICAL_ORIGIN}/
 Alias: https://www.furnaceisntfree.com/ (Worker 301 to ${CANONICAL_ORIGIN}/ when www reaches this script)
 When GET or HEAD for www.furnaceisntfree.com reaches this Worker, the script responds 301 to the apex and keeps the path and query. Known HTML aliases such as /aziel fold into that same hop. This describes Worker behavior when www is attached to this script. It is not a Search Console property check, not a crawl confirmation, and not proof that public www is attached. If another route serves www, the 301 does not run.
@@ -1131,10 +1309,15 @@ The file body is the key. The Worker serves it as text/plain. Bing, Yandex, Sezn
 ## Limits
 Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This file is not a LIVE claim.
 
+## Tip
+On 2026-11-06, production /health reported source_base_tip_short d47caa6d and noted_vid 6a781b04.
+Earlier Cos label 472bb7c4 / 87b12512 was not that response and is not called live.
+Health reports the git commit captured when the bundle was built. Indexing is unconfirmed. This file is not a deploy.
+
 ## Sister doors
-Official cross-chain sister handles linked from /aziel. A link is not a deployment claim and not a catalog.
-Each door below is subjectOf and relatedLink of the one person https://www.azieleliab.com/#aziel.
-https://www.azieleliab.com/ is also that person's url and a sameAs profile. The other doors are not Person sameAs entries.
+Official hubs linked from /aziel, plus Softwares https://www.azieleliab.com/runtime/, both GitHub accounts, and Glama aziel-runtime.
+A link is not a deployment claim and not a catalog.
+Each hub below is subjectOf and sameAs of the one person https://www.azieleliab.com/#aziel. None of these is an extra @id.
 ${SISTER_LINKS.map((url) => `- ${url}`).join("\n")}
 
 Indexing is requested. This document does not assert that any search engine has indexed the host.
@@ -1154,19 +1337,8 @@ const cite = {
   also_known_as: PERSON_ALIASES,
   roles: PERSON_ROLES,
   relatedLink: SISTER_LINKS,
-  person: {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "@id": PERSON_ID,
-    name: "Aziel Eliab",
-    alternateName: PERSON_ALIASES,
-    jobTitle: PERSON_ROLES,
-    description:
-      "Aziel Eliab is one person, identified at https://www.azieleliab.com/#aziel, and the author of The Furnace Isn't Free. alternateName lists other names of this same person. subjectOf lists official sister sites.",
-    url: "https://www.azieleliab.com/",
-    sameAs: PERSON_SAME_AS,
-    subjectOf: SISTER_SUBJECTS
-  },
+  tip_observation: TIP_OBSERVATION,
+  person: personNode(),
   work: {
     "@type": "WebSite",
     "@id": WEBSITE_ID,
@@ -1176,9 +1348,16 @@ const cite = {
     publisher: { "@id": PERSON_ID }
   },
   reviewed: REVIEWED,
-  note: "One project in the Aziel Eliab ecosystem. Person @id is the single person node. alternateName values are that same person. subjectOf and relatedLink are sister doors. https://www.azieleliab.com/ is both the person url and a sameAs profile. The other doors are not sameAs. This file does not restate other projects' catalogs, and it does not claim production DNS is live."
+  note: "One project in the Aziel Eliab ecosystem. Person @id is the single person node. alternateName values are that same person. Official hubs are subjectOf and sameAs. They are not extra @id values. This file does not restate other projects' catalogs, and it does not claim production DNS is live. Indexing is unconfirmed."
 };
 await writeFile(path.join(publicDir, "cite.json"), JSON.stringify(cite, null, 2) + "\n");
+const personJson = JSON.stringify(personNode(), null, 2) + "\n";
+await writeFile(path.join(publicDir, "person.jsonld"), personJson);
+await writeFile(path.join(publicDir, "identity.jsonld"), personJson);
+await writeFile(path.join(publicDir, "graph.jsonld"), JSON.stringify(graphDocument(), null, 2) + "\n");
+const whoIs = whoIsText();
+await writeFile(path.join(publicDir, "who-is"), whoIs);
+await writeFile(path.join(publicDir, "who-is-aziel-eliab.txt"), whoIs);
 
 const openapi = {
   openapi: "3.1.0",

@@ -17,6 +17,7 @@ const MIME = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  ".jsonld": "application/ld+json; charset=utf-8",
   ".txt": "text/plain; charset=utf-8",
   ".svg": "image/svg+xml",
   ".xml": "application/xml; charset=utf-8",
@@ -108,8 +109,9 @@ const server = createServer(async (req, res) => {
     try {
       const data = await readFile(file);
       const ext = path.extname(file);
+      const pathname = new URL(req.url, "http://127.0.0.1").pathname;
       const headers = {
-        "content-type": MIME[ext] || "application/octet-stream",
+        "content-type": pathname === "/who-is" ? "text/plain; charset=utf-8" : MIME[ext] || "application/octet-stream",
         "x-content-type-options": "nosniff",
         "content-signal": "search=yes, ai-input=yes, ai-train=yes",
         "referrer-policy": "no-referrer"
