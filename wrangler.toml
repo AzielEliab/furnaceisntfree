@@ -15,17 +15,18 @@ html_handling = "auto-trailing-slash"
 # every path, then calls env.ASSETS.fetch for files it does not handle.
 run_worker_first = true
 
-# Create these in Cloudflare before deploy. Leave them unset until then.
-# Durable page views and receipts need SITE_KV.
+# SITE_KV created 2026-11-12 (America/Indianapolis) as FURNACEISNTFREE_SITE.
+# Durable page views and receipts use this namespace after the next wrangler deploy.
 # Private JPEG bytes should use UPLOADS (R2). Without R2, KV stores JPEGs up to 2 MB.
+# R2 enabled 2026-11-13; private JPEGs go to bucket furnaceisntfree-uploads. Do not change DNS.
 #
-# [[kv_namespaces]]
-# binding = "SITE_KV"
-# id = "OWNER_KV_NAMESPACE_ID"
+[[kv_namespaces]]
+binding = "SITE_KV"
+id = "da60118b85704152a38a630c4849924f"
 #
-# [[r2_buckets]]
-# binding = "UPLOADS"
-# bucket_name = "the-furnace-isnt-free-private"
+[[r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "furnaceisntfree-uploads"
 
 [vars]
 CANONICAL_ORIGIN = "https://furnaceisntfree.com"
