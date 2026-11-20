@@ -4,7 +4,7 @@
     "title": "The Furnace Isn't Free",
     "version": "1.0.0",
     "summary": "Page-view counter, usefulness receipts, and private offer notes.",
-    "description": "Public reads are counts only. Receipt export and private JPEGs require RECEIPT_READ_TOKEN. This document does not mean the production domain is deployed."
+    "description": "Public reads are counts only. Receipt export and private JPEGs require RECEIPT_READ_TOKEN. furnaceisntfree.com is live and deployed. This document does not confirm search-engine indexing."
   },
   "servers": [
     {
@@ -136,6 +136,16 @@
     "/80eed0a6b524a05bdf7b07e287f6d12a.txt": {
       "get": {
         "summary": "IndexNow key file. Public by design. Does not submit URLs.",
+        "responses": {
+          "200": {
+            "description": "text/plain key"
+          }
+        }
+      }
+    },
+    "/.well-known/indexnow-key.txt": {
+      "get": {
+        "summary": "IndexNow key file at the well-known path. Public by design. Does not submit URLs.",
         "responses": {
           "200": {
             "description": "text/plain key"

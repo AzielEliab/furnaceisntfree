@@ -70,17 +70,21 @@ These names are one person. They are not extra @id values and not extra sites.
 sameAs:
 - https://www.azieleliab.com/#aziel
 - https://www.azieleliab.com/
-- https://www.azieleliab.com/runtime/
-- https://azielcorpuslibrary.net/
+- https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
 - https://hedidntjump.com/
-- https://github.com/AzielEliab/aziel-runtime
-- https://aziel-runtime.vibelock.workers.dev/
-- https://timetounsealthebook.net/
 - https://furnaceisntfree.com/
+- https://timetounsealthebook.net/
+- https://whitestone.vibelock.workers.dev/
+- https://aziel-runtime.vibelock.workers.dev/
+- https://trades-runtime.vibelock.workers.dev/
+- https://miragegrid.vibelock.workers.dev/
+- https://www.azieleliab.com/runtime/
+- https://github.com/AzielEliab/aziel-runtime
 - https://github.com/AzielEliab
 - https://github.com/azieltherevealerofthesealed-arch
 - https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
+- https://glama.ai/mcp/servers/AzielEliab/trades-runtime
 - https://x.com/AzielEliab
 Roles already used for this person: digital rights activist, software developer, engineer, designer, philosopher, author, artist, researcher
 Official hubs are sameAs on that one person. They are not extra @id values.
@@ -134,28 +138,38 @@ GET /api/health, GET /health, GET /version, and GET /api/version report the git 
 
 ## IndexNow
 Public key file: https://furnaceisntfree.com/80eed0a6b524a05bdf7b07e287f6d12a.txt
-The file body is the key. The Worker serves it as text/plain. Bing, Yandex, Seznam, and Naver can use that file to accept a later ping. This site does not call IndexNow and does not submit URLs. Indexing remains unconfirmed.
+Well-known key file: https://furnaceisntfree.com/.well-known/indexnow-key.txt
+Both file bodies are the same key. The Worker serves each as text/plain. Bing, Yandex, Seznam, and Naver can use that key to accept a later ping. This site does not call IndexNow and does not submit URLs. Indexing remains unconfirmed.
 
 ## Limits
-Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This file is not a LIVE claim.
+Cap-7 mesh DNS and public ICANN registration are different systems. MirageGrid is mesh-only, public_icann is false, and it is not an ICANN registrar. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed.
+Trades Runtime is a public MCP runtime. This file does not state live_backends or pilot_started.
 
 ## Tip
 On 2026-11-06, production /health reported source_base_tip_short d47caa6d and noted_vid 6a781b04.
 Earlier Cos label 472bb7c4 / 87b12512 was not that response and is not called live.
-Health reports the git commit captured when the bundle was built. Indexing is unconfirmed. This file is not a deploy.
+Health reports the git commit captured when the bundle was built. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed.
 
 ## Sister doors
-Official hubs linked from /aziel, plus Softwares https://www.azieleliab.com/runtime/, both GitHub accounts, and Glama aziel-runtime.
-A link is not a deployment claim and not a catalog.
+Ten public doors linked from /aziel and /doors. Checked live on 2026-11-19. Canonical corpus host is https://www.azielcorpuslibrary.net/.
+Also linked: Softwares https://www.azieleliab.com/runtime/, the Aziel Runtime source repository, both GitHub accounts, and the Glama listings below.
+furnaceisntfree.com is live and deployed. A link does not mean this HVAC site runs another project.
 Each hub below is subjectOf and sameAs of the one person https://www.azieleliab.com/#aziel. None of these is an extra @id.
 - https://www.azieleliab.com/
-- https://www.azieleliab.com/runtime/
-- https://azielcorpuslibrary.net/
+- https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
 - https://hedidntjump.com/
-- https://github.com/AzielEliab/aziel-runtime
-- https://aziel-runtime.vibelock.workers.dev/
-- https://timetounsealthebook.net/
 - https://furnaceisntfree.com/
+- https://timetounsealthebook.net/
+- https://whitestone.vibelock.workers.dev/
+- https://aziel-runtime.vibelock.workers.dev/
+- https://trades-runtime.vibelock.workers.dev/
+- https://miragegrid.vibelock.workers.dev/
+- https://www.azieleliab.com/runtime/
+- https://github.com/AzielEliab/aziel-runtime
 
-Indexing is requested. This document does not assert that any search engine has indexed the host.
+## Glama listings
+- https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
+- https://glama.ai/mcp/servers/AzielEliab/trades-runtime
+
+Indexing is requested. Search-engine indexing is unconfirmed. This document does not assert that any search engine has indexed the host.

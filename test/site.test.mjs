@@ -4,7 +4,7 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { handleRequest } from "../lib/api.mjs";
-import { INDEXNOW_KEY, INDEXNOW_FILENAME, INDEXNOW_PATH } from "../lib/indexnow.mjs";
+import { INDEXNOW_KEY, INDEXNOW_FILENAME, INDEXNOW_PATH, INDEXNOW_WELL_KNOWN_PATH } from "../lib/indexnow.mjs";
 import worker from "../src/worker.js";
 import { CANONICAL_HTML_PATH, PATHS, canonicalRedirectUrl } from "../lib/paths.mjs";
 import { createMemoryStore } from "../lib/store-memory.mjs";
@@ -318,10 +318,11 @@ test("every page has the ecosystem footer, a real main heading, and no dead anch
     assert.doesNotMatch(withoutFeedback, /<button[^>]*\sdisabled/, file);
   }
   const apiHrefs = new Set(["/count", "/v1/count", "/v1/stats", "/stats", "/api/usefulness", "/api/health", "/openapi.json"]);
+  const redirectOnly = new Set(["/doors", "/doors/"]);
   for (const href of hrefs) {
     if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("#")) continue;
     const clean = href.split("#")[0].split("?")[0];
-    if (apiHrefs.has(clean) || clean.startsWith("/api/")) continue;
+    if (apiHrefs.has(clean) || clean.startsWith("/api/") || redirectOnly.has(clean)) continue;
     const rel = clean.endsWith("/") ? `${clean}index.html` : clean;
     const file = path.join(publicDir, rel.replace(/^\//, ""));
     await readFile(file);
@@ -330,6 +331,10 @@ test("every page has the ecosystem footer, a real main heading, and no dead anch
     const rel = pagePath === "/" ? "index.html" : `${pagePath.slice(1)}index.html`;
     const html = await readFile(path.join(publicDir, rel), "utf8");
     assert.match(html, /<main id="main">/);
+    assert.match(html, /furnaceisntfree\.com is live and deployed/);
+    assert.doesNotMatch(html, /does not claim that the domain is deployed/);
+    assert.equal(html.includes("thefurnaceisntfree.com"), false, pagePath);
+    assert.equal(html.includes("download-tracker"), false, pagePath);
   }
 });
 
@@ -375,7 +380,9 @@ test("discovery files allow indexing signals and cite the person id", async () =
     assert.ok(match, loc);
     return match[1];
   };
-  assert.equal(lastmod("https://furnaceisntfree.com/aziel/"), "2026-11-06");
+  assert.equal(lastmod("https://furnaceisntfree.com/aziel/"), "2026-11-20");
+  assert.equal(lastmod("https://furnaceisntfree.com/llms.txt"), "2026-11-20");
+  assert.equal(lastmod("https://furnaceisntfree.com/ai.txt"), "2026-11-20");
   assert.equal(lastmod("https://furnaceisntfree.com/the-numbers/"), "2026-11-05");
   assert.equal(lastmod("https://furnaceisntfree.com/how-the-offer-works/"), "2026-11-05");
   assert.equal(lastmod("https://furnaceisntfree.com/discount-reality-check/"), "2026-11-05");
@@ -393,14 +400,17 @@ test("discovery files allow indexing signals and cite the person id", async () =
   }
   const sisterUrls = [
     "https://www.azieleliab.com/",
-    "https://www.azieleliab.com/runtime/",
-    "https://azielcorpuslibrary.net/",
+    "https://www.azielcorpuslibrary.net/",
     "https://godlock.uk/",
     "https://hedidntjump.com/",
-    "https://github.com/AzielEliab/aziel-runtime",
-    "https://aziel-runtime.vibelock.workers.dev/",
+    "https://furnaceisntfree.com/",
     "https://timetounsealthebook.net/",
-    "https://furnaceisntfree.com/"
+    "https://whitestone.vibelock.workers.dev/",
+    "https://aziel-runtime.vibelock.workers.dev/",
+    "https://trades-runtime.vibelock.workers.dev/",
+    "https://miragegrid.vibelock.workers.dev/",
+    "https://www.azieleliab.com/runtime/",
+    "https://github.com/AzielEliab/aziel-runtime"
   ];
   assert.deepEqual(cite.relatedLink, sisterUrls);
   for (const sister of sisterUrls) {
@@ -413,11 +423,20 @@ test("discovery files allow indexing signals and cite the person id", async () =
     "https://github.com/AzielEliab",
     "https://github.com/azieltherevealerofthesealed-arch",
     "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+    "https://glama.ai/mcp/servers/AzielEliab/trades-runtime",
     "https://x.com/AzielEliab"
   ]) {
     assert.ok(cite.person.sameAs.includes(url), url);
   }
-  assert.equal(cite.person.sameAs.includes("https://trades-runtime.vibelock.workers.dev/"), false);
+  assert.equal(cite.relatedLink.includes("https://azielcorpuslibrary.net/"), false);
+  assert.equal(cite.person.sameAs.includes("https://azielcorpuslibrary.net/"), false);
+  assert.ok(cite.person.sameAs.includes("https://www.azielcorpuslibrary.net/"));
+  assert.ok(cite.person.sameAs.includes("https://trades-runtime.vibelock.workers.dev/"));
+  assert.doesNotMatch(llms, /https:\/\/azielcorpuslibrary\.net\//);
+  assert.match(llms, /Well-known key file: https:\/\/furnaceisntfree\.com\/\.well-known\/indexnow-key\.txt/);
+  assert.match(llms, /does not state live_backends or pilot_started/);
+  assert.doesNotMatch(llms, /live_backends:\s*true|pilot_started:\s*true|thefurnaceisntfree\.com|download-tracker|ark-private/);
+  assert.match(llms, /furnaceisntfree\.com is live and deployed/);
   assert.equal(cite.person.subjectOf.find((item) => item.url === "https://furnaceisntfree.com/")["@id"], "https://furnaceisntfree.com/#website");
   assert.equal(cite.tip_observation.production_source_base_tip_short, "d47caa6d");
   assert.equal(cite.tip_observation.production_noted_vid, "6a781b04");
@@ -484,36 +503,56 @@ test("machine identity pack keeps one person id", async () => {
   assert.equal(visible.includes("15:20"), false);
 });
 
-test("aziel doors are the official sister set", async () => {
+test("aziel doors are the ten live public doors", async () => {
   const html = await readFile(path.join(publicDir, "aziel/index.html"), "utf8");
   const urls = [
     "https://www.azieleliab.com/",
-    "https://azielcorpuslibrary.net/",
+    "https://www.azielcorpuslibrary.net/",
     "https://godlock.uk/",
     "https://hedidntjump.com/",
-    "https://github.com/AzielEliab/aziel-runtime",
+    "https://timetounsealthebook.net/",
+    "https://whitestone.vibelock.workers.dev/",
     "https://aziel-runtime.vibelock.workers.dev/",
-    "https://timetounsealthebook.net/"
+    "https://github.com/AzielEliab/aziel-runtime",
+    "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+    "https://trades-runtime.vibelock.workers.dev/",
+    "https://glama.ai/mcp/servers/AzielEliab/trades-runtime",
+    "https://miragegrid.vibelock.workers.dev/"
   ];
   for (const url of urls) assert.ok(html.includes(`href="${url}"`), url);
+  assert.equal(html.includes("https://azielcorpuslibrary.net/"), false);
   assert.match(html, /Official cross-chain sister handles/);
-  assert.equal(html.includes("trades-runtime"), false);
+  assert.match(html, /Marion Zioncheck Archive/);
+  assert.match(html, /live pro se web app/);
+  assert.match(html, /does not state live_backends or pilot_started/);
+  assert.match(html, /public_icann is false/);
+  assert.match(html, /not an ICANN registrar/);
+  assert.match(html, /href="\/doors\/"/);
+  assert.doesNotMatch(html, /live_backends:\s*true|pilot_started:\s*true|download-tracker|thefurnaceisntfree\.com|ark-private/);
   const azielVisible = html.replace(/<head[\s\S]*?<\/head>/g, " ").replace(/<script[\s\S]*?<\/script>/g, " ");
-  assert.equal(azielVisible.includes("glama.ai"), false);
-  assert.ok(html.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"));
+  assert.ok(azielVisible.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"));
+  assert.ok(azielVisible.includes("https://glama.ai/mcp/servers/AzielEliab/trades-runtime"));
+  assert.equal(azielVisible.includes("15:20"), false);
+  assert.equal(azielVisible.includes("The Revealer of the Sealed"), false);
   assert.match(html, /Cap-7 mesh DNS and public ICANN registration are different systems/);
   assert.match(html, /Paid satellite is HELD/);
   assert.match(html, /Remain-OFF locks stay off/);
   assert.match(html, /Mesh tracking stays off/);
+  assert.match(html, /furnaceisntfree\.com is live and deployed/);
   assert.doesNotMatch(html, /identity-lock|identity lock|id-lock/i);
+  assert.doesNotMatch(html, /This door is not marked LIVE/);
   const visible = html.replace(/<script[\s\S]*?<\/script>/g, " ");
   assert.match(visible, /Cap-7 mesh DNS and public ICANN/);
   const data = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   const pageNode = data.find((node) => node["@type"] === "WebPage");
-  assert.equal(pageNode.dateModified, "2026-11-06");
+  assert.equal(pageNode.dateModified, "2026-11-20");
   assert.equal(pageNode.additionalProperty.find((item) => item.name === "paid_satellite").value, "HELD");
   assert.equal(pageNode.additionalProperty.find((item) => item.name === "mesh_tracking").value, "off");
   assert.equal(pageNode.additionalProperty.find((item) => item.name === "cap7_dns").value, "separate_from_public_icann");
+  assert.equal(pageNode.additionalProperty.find((item) => item.name === "live").value, "true");
+  assert.equal(pageNode.additionalProperty.find((item) => item.name === "indexing").value, "unconfirmed");
+  assert.equal(data.filter((node) => node["@type"] === "Person").length, 1);
+  assert.equal(data.find((node) => node["@type"] === "Person")["@id"], "https://www.azieleliab.com/#aziel");
 });
 
 test("www alias redirects to the apex host", async () => {
@@ -561,6 +600,11 @@ test("www and HTML aliases end on the apex in one hop", async () => {
     ["https://www.furnaceisntfree.com/", "https://furnaceisntfree.com/"],
     ["https://www.furnaceisntfree.com/aziel", "https://furnaceisntfree.com/aziel/"],
     ["https://www.furnaceisntfree.com/aziel/", "https://furnaceisntfree.com/aziel/"],
+    ["https://furnaceisntfree.com/doors", "https://furnaceisntfree.com/aziel/"],
+    ["https://furnaceisntfree.com/doors/", "https://furnaceisntfree.com/aziel/"],
+    ["https://www.furnaceisntfree.com/doors", "https://furnaceisntfree.com/aziel/"],
+    ["https://www.furnaceisntfree.com/doors/?q=1", "https://furnaceisntfree.com/aziel/?q=1"],
+    ["https://furnaceisntfree.com/doors?x=2", "https://furnaceisntfree.com/aziel/?x=2"],
     ["https://www.furnaceisntfree.com/aziel?q=1", "https://furnaceisntfree.com/aziel/?q=1"],
     ["https://www.furnaceisntfree.com/robots.txt", "https://furnaceisntfree.com/robots.txt"],
     ["https://www.furnaceisntfree.com/sitemap.xml?x=2", "https://furnaceisntfree.com/sitemap.xml?x=2"],
@@ -746,6 +790,49 @@ test("indexnow key is public text and is not submitted", async () => {
   assert.equal(www.headers.get("location"), `https://furnaceisntfree.com${INDEXNOW_PATH}`);
   const openapi = JSON.parse(await readFile(path.join(publicDir, "openapi.json"), "utf8"));
   assert.equal(openapi.paths[INDEXNOW_PATH].get.summary.includes("Does not submit URLs"), true);
+  assert.equal(openapi.paths[INDEXNOW_WELL_KNOWN_PATH].get.summary.includes("Does not submit URLs"), true);
+  const wellKnownDisk = await readFile(path.join(publicDir, INDEXNOW_WELL_KNOWN_PATH.slice(1)), "utf8");
+  assert.equal(wellKnownDisk, INDEXNOW_KEY);
+  const wellKnown = await worker.fetch(new Request(`https://furnaceisntfree.com${INDEXNOW_WELL_KNOWN_PATH}`), {});
+  assert.equal(wellKnown.status, 200);
+  assert.equal(wellKnown.headers.get("content-type"), "text/plain; charset=utf-8");
+  assert.equal(wellKnown.headers.get("content-signal"), "search=yes, ai-input=yes, ai-train=yes");
+  assert.equal(await wellKnown.text(), INDEXNOW_KEY);
+  const wellKnownWww = await worker.fetch(new Request(`https://www.furnaceisntfree.com${INDEXNOW_WELL_KNOWN_PATH}`), {});
+  assert.equal(wellKnownWww.status, 301);
+  assert.equal(wellKnownWww.headers.get("location"), `https://furnaceisntfree.com${INDEXNOW_WELL_KNOWN_PATH}`);
+});
+
+test("HTML and text responses send Content-Signal", async () => {
+  const signal = "search=yes, ai-input=yes, ai-train=yes";
+  const assets = {
+    async fetch(request) {
+      const pathname = new URL(request.url).pathname;
+      if (pathname.endsWith(".png")) {
+        return new Response(Uint8Array.from([1, 2, 3]), { headers: { "content-type": "image/png" } });
+      }
+      if (pathname.endsWith(".txt")) {
+        return new Response("hello", { headers: { "content-type": "text/plain; charset=utf-8" } });
+      }
+      return new Response("<!doctype html><h1>Hi</h1>", {
+        status: pathname === "/missing" ? 404 : 200,
+        headers: { "content-type": "text/html; charset=utf-8" }
+      });
+    }
+  };
+  const html = await worker.fetch(new Request("https://furnaceisntfree.com/aziel/"), { ASSETS: assets });
+  assert.equal(html.status, 200);
+  assert.match(html.headers.get("content-type"), /text\/html/);
+  assert.equal(html.headers.get("content-signal"), signal);
+  const text = await worker.fetch(new Request("https://furnaceisntfree.com/llms.txt"), { ASSETS: assets });
+  assert.equal(text.headers.get("content-signal"), signal);
+  const image = await worker.fetch(new Request("https://furnaceisntfree.com/images/social-card.png"), { ASSETS: assets });
+  assert.equal(image.headers.get("content-signal"), null);
+  const missing = await worker.fetch(new Request("https://furnaceisntfree.com/missing"), { ASSETS: assets });
+  assert.equal(missing.status, 404);
+  assert.equal(missing.headers.get("content-signal"), signal);
+  const health = await worker.fetch(new Request("https://furnaceisntfree.com/api/health"), {});
+  assert.equal(health.headers.get("content-signal"), signal);
 });
 
 test("health provenance uses the build tip and cloudflare version metadata", async () => {

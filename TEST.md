@@ -8,7 +8,7 @@ npm test
 
 That command renders `public/` and runs `node --test test/*.test.mjs`.
 
-Last run during this build: 19 tests, 19 passed. The run checks that public URLs use `https://furnaceisntfree.com`, that GET and HEAD on `www.furnaceisntfree.com` 301 to the apex in one hop (including `/`, `/aziel`, `/aziel/`, `/robots.txt`, and `/sitemap.xml`), that known HTML aliases use 301, and that `/stats` stays JSON.
+Last run during this build: 23 tests, 23 passed. The run checks that public URLs use `https://furnaceisntfree.com`, that GET and HEAD on `www.furnaceisntfree.com` 301 to the apex in one hop (including `/`, `/aziel`, `/aziel/`, `/doors`, `/doors/`, `/robots.txt`, and `/sitemap.xml`), that known HTML aliases use 301, that `/.well-known/indexnow-key.txt` returns the IndexNow key as `text/plain`, that HTML and text responses send `Content-Signal`, and that `/stats` stays JSON.
 
 Covered:
 
@@ -46,7 +46,7 @@ Not claimed: a production Lighthouse score, a screen-reader product pass beyond 
 
 ## Deploy attempt
 
-`npx wrangler@4.40.0 deploy` was run after the site tests passed. It exited with an error that `CLOUDFLARE_API_TOKEN` is required in this non-interactive environment. Nothing was uploaded. `furnaceisntfree.com` is not live. A dry run only bundled the Worker (about 73 KiB) and did not publish it.
+`npx wrangler@4.40.0 deploy` was run on 31 October 2026 after the site tests passed. It exited with an error that `CLOUDFLARE_API_TOKEN` is required in this non-interactive environment. Nothing was uploaded from that attempt. `https://furnaceisntfree.com` was live by 19 November 2026. This test run does not deploy.
 
 ## Link check
 

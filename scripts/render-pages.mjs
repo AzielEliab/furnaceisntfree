@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { INDEXNOW_KEY, INDEXNOW_FILENAME, INDEXNOW_PATH } from "../lib/indexnow.mjs";
+import { INDEXNOW_KEY, INDEXNOW_FILENAME, INDEXNOW_PATH, INDEXNOW_WELL_KNOWN_PATH } from "../lib/indexnow.mjs";
 import { CANONICAL_HOST, CANONICAL_ORIGIN, PATHS } from "../lib/paths.mjs";
 import { jpegRefuseCopy, QUOTE_FIELDS } from "../public/js/engine.js";
 import { writeSocialCard } from "./social-card.mjs";
@@ -87,21 +87,62 @@ const PERSON_ROLES = [
   "artist",
   "researcher"
 ];
+const GLAMA_AZIEL_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime";
+const GLAMA_TRADES_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/trades-runtime";
+const DOORS_CHECKED = "2026-11-19";
+const SURFACE_UPDATED = "2026-11-20";
+const PUBLIC_DOORS = [
+  { "@type": "WebSite", name: "Aziel Eliab", url: "https://www.azieleliab.com/", description: "Identity hub." },
+  {
+    "@type": "WebSite",
+    name: "Aziel Corpus Library",
+    url: "https://www.azielcorpuslibrary.net/",
+    description: "Research archive and knowledge library. Canonical host is www."
+  },
+  { "@type": "WebSite", name: "GodLock", url: "https://godlock.uk/", description: "Separate software and infrastructure project." },
+  {
+    "@type": "WebSite",
+    name: "He Didn't Jump",
+    url: "https://hedidntjump.com/",
+    description: "Marion Zioncheck Archive. A separate public project."
+  },
+  {
+    "@type": "WebSite",
+    "@id": WEBSITE_ID,
+    name: "The Furnace Isn't Free",
+    url: `${CANONICAL_ORIGIN}/`,
+    description: "Homeowner guide to HVAC offer structure. Live at furnaceisntfree.com."
+  },
+  { "@type": "WebSite", name: "Time to Unseal the Book", url: "https://timetounsealthebook.net/", description: "A separate public project." },
+  { "@type": "WebApplication", name: "Whitestone", url: "https://whitestone.vibelock.workers.dev/", description: "Live pro se web app." },
+  {
+    "@type": "WebApplication",
+    name: "Aziel Runtime",
+    url: "https://aziel-runtime.vibelock.workers.dev/",
+    description: "MCP and Softwares runtime."
+  },
+  {
+    "@type": "WebApplication",
+    name: "Trades Runtime",
+    url: "https://trades-runtime.vibelock.workers.dev/",
+    description: "Public MCP runtime. live_backends and pilot_started are not stated."
+  },
+  {
+    "@type": "WebApplication",
+    name: "MirageGrid",
+    url: "https://miragegrid.vibelock.workers.dev/",
+    description: "Cap-7 mesh DNS factory Worker. Mesh-only. public_icann is false. Not an ICANN registrar."
+  }
+];
 const SISTER_SUBJECTS = [
-  { "@type": "WebSite", name: "Aziel Eliab", url: "https://www.azieleliab.com/" },
-  { "@type": "WebSite", name: "Aziel Runtime", url: "https://www.azieleliab.com/runtime/" },
-  { "@type": "WebSite", name: "Aziel Corpus Library", url: "https://azielcorpuslibrary.net/" },
-  { "@type": "WebSite", name: "Godlock", url: "https://godlock.uk/" },
-  { "@type": "WebSite", name: "He Didn't Jump", url: "https://hedidntjump.com/" },
+  ...PUBLIC_DOORS,
+  { "@type": "WebSite", name: "Aziel Runtime Softwares", url: "https://www.azieleliab.com/runtime/" },
   {
     "@type": "SoftwareSourceCode",
     name: "Aziel Runtime source",
     url: "https://github.com/AzielEliab/aziel-runtime",
     codeRepository: "https://github.com/AzielEliab/aziel-runtime"
-  },
-  { "@type": "WebSite", name: "Aziel Runtime hosted page", url: "https://aziel-runtime.vibelock.workers.dev/" },
-  { "@type": "WebSite", name: "Time to Unseal the Book", url: "https://timetounsealthebook.net/" },
-  { "@type": "WebSite", "@id": WEBSITE_ID, name: "The Furnace Isn't Free", url: `${CANONICAL_ORIGIN}/` }
+  }
 ];
 const SISTER_LINKS = SISTER_SUBJECTS.map((item) => item.url);
 const PERSON_SAME_AS = [
@@ -109,11 +150,12 @@ const PERSON_SAME_AS = [
   ...SISTER_LINKS,
   "https://github.com/AzielEliab",
   "https://github.com/azieltherevealerofthesealed-arch",
-  "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+  GLAMA_AZIEL_RUNTIME,
+  GLAMA_TRADES_RUNTIME,
   "https://x.com/AzielEliab"
 ];
 const PERSON_DESCRIPTION =
-  "Aziel Eliab is one person, @id https://www.azieleliab.com/#aziel, and the author of The Furnace Isn't Free. alternateName lists other names of this same person already published on the official hubs, including Hebrew forms and common misspellings. sameAs lists those hubs, both GitHub accounts, Glama aziel-runtime, Softwares at https://www.azieleliab.com/runtime/, and this site. Those URLs are not extra @id values.";
+  "Aziel Eliab is one person, @id https://www.azieleliab.com/#aziel, and the author of The Furnace Isn't Free. alternateName lists other names of this same person already published on the official hubs, including Hebrew forms and common misspellings. sameAs lists the public doors, both GitHub accounts, the Glama listings for aziel-runtime and trades-runtime, Softwares at https://www.azieleliab.com/runtime/, and this site. Those URLs are not extra @id values.";
 const TIP_OBSERVATION = {
   observed_on: "2026-11-06",
   production_source_base_tip_short: "d47caa6d",
@@ -121,7 +163,8 @@ const TIP_OBSERVATION = {
   earlier_cos_label_not_live: "472bb7c4",
   earlier_version_prefix_not_live: "87b12512",
   indexing: "unconfirmed",
-  note: "Production /health on that date reported d47caa6d and 6a781b04. The earlier Cos label is not that response and is not called live. This file does not deploy. Indexing is unconfirmed."
+  doors_checked: DOORS_CHECKED,
+  note: "Production /health on that date reported d47caa6d and 6a781b04. The earlier Cos label is not that response and is not called live. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed."
 };
 const MACHINE_PATHS = [
   "/person.jsonld",
@@ -192,12 +235,19 @@ function layout({ path: pagePath, title, description, body, robots = "index,foll
 <meta name="robots" content="${robots}">
 <link rel="canonical" href="${canonical}">
 <link rel="author" href="${PERSON_ID}">
-<link rel="me" href="https://www.azieleliab.com/">
-<link rel="me" href="https://www.azieleliab.com/runtime/">
-<link rel="me" href="https://github.com/AzielEliab">
-<link rel="me" href="https://github.com/azieltherevealerofthesealed-arch">
-<link rel="me" href="https://glama.ai/mcp/servers/AzielEliab/aziel-runtime">
-<link rel="me" href="https://x.com/AzielEliab">
+${[
+  ...PUBLIC_DOORS.map((item) => item.url),
+  "https://www.azieleliab.com/runtime/",
+  "https://github.com/AzielEliab/aziel-runtime",
+  "https://github.com/AzielEliab",
+  "https://github.com/azieltherevealerofthesealed-arch",
+  GLAMA_AZIEL_RUNTIME,
+  GLAMA_TRADES_RUNTIME,
+  "https://x.com/AzielEliab"
+]
+  .filter((href, index, all) => all.indexOf(href) === index)
+  .map((href) => `<link rel="me" href="${href}">`)
+  .join("\n")}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/site.css">
 <meta property="og:title" content="${esc(title)}">
@@ -241,7 +291,7 @@ ${body}
     <p class="ecosystem-line">Part of the Aziel Eliab ecosystem</p>
     <p class="brand-line">We don't name companies. We name what they do.</p>
     <ul class="footer-nav">${footer}</ul>
-    <p class="fine">Content reviewed ${REVIEWED}. Canonical host: furnaceisntfree.com. www.furnaceisntfree.com is an alias. This repository does not claim that the domain is deployed or that search engines have indexed it. First-party view counts live at <a href="/stats/">/stats</a> and <a href="/count">/count</a>.</p>
+    <p class="fine">Content reviewed ${REVIEWED}. Canonical host: furnaceisntfree.com. www.furnaceisntfree.com is an alias. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed. First-party view counts are at <a href="/stats/">/stats</a> and <a href="/count">/count</a>.</p>
   </div>
 </footer>
 <p class="print-only">Part of the Aziel Eliab ecosystem</p>
@@ -337,10 +387,12 @@ function whoIsText() {
     "Tip:",
     "On 2026-11-06, production /health reported source_base_tip_short d47caa6d and noted_vid 6a781b04.",
     "Earlier Cos label 472bb7c4 / 87b12512 was not that response and is not called live.",
-    "Health reports the git commit captured when the bundle was built. Indexing is unconfirmed. This file is not a deploy.",
+    "Health reports the git commit captured when the bundle was built. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed.",
     "",
     "Limits:",
     "Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off.",
+    "MirageGrid is mesh-only. public_icann is false. It is not an ICANN registrar.",
+    "Trades Runtime is a public MCP runtime. This file does not state live_backends or pilot_started.",
     "Growth-ON: search, AI input, and AI train are allowed.",
     "www.furnaceisntfree.com 301s to the apex when the request reaches this Worker. That is not a Search Console property check.",
     "This file does not call IndexNow and does not submit URLs.",
@@ -378,7 +430,7 @@ function identityFaq(url) {
         name: "Which official sister sites are linked from this project?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: `${PERSON_SAME_AS.join(", ")}. Official hubs are sameAs and subjectOf for the one person. They are not extra Person @id values. A link is not a deployment claim.`
+          text: `${PERSON_SAME_AS.join(", ")}. Official hubs are sameAs and subjectOf for the one person. They are not extra Person @id values. furnaceisntfree.com is live and deployed. A link does not mean this HVAC site runs another project. Search-engine indexing is unconfirmed.`
         }
       }
     ]
@@ -408,7 +460,8 @@ function pageGraph(page) {
       { "@type": "PropertyValue", name: "remain_off", value: "true" },
       { "@type": "PropertyValue", name: "mesh_tracking", value: "off" },
       { "@type": "PropertyValue", name: "indexing", value: "unconfirmed" },
-      { "@type": "PropertyValue", name: "live", value: "false" }
+      { "@type": "PropertyValue", name: "live", value: "true" },
+      { "@type": "PropertyValue", name: "doors_checked", value: DOORS_CHECKED }
     ];
   }
   if (IDENTITY_PATHS.has(page.path)) webpage.relatedLink = SISTER_LINKS;
@@ -952,7 +1005,7 @@ pages.push({
 pages.push({
   path: "/aziel/",
   title: "AZIEL | One ecosystem, multiple doors",
-  updated: "2026-11-06",
+  updated: SURFACE_UPDATED,
   description:
     "The Furnace Isn't Free is one public project in the Aziel Eliab ecosystem. Each linked door keeps its own purpose.",
   body: `<article class="wrap prose">
@@ -973,28 +1026,31 @@ pages.push({
       <p>If the work holds, the name was only a handle on the door.</p>
     </blockquote>
     <p class="source">Source: <a href="https://www.azieleliab.com/aziel">azieleliab.com/aziel</a>, read ${REVIEWED}. Evidence label: verified document (public page). Person: <a href="https://www.azieleliab.com/#aziel">Aziel Eliab</a>.</p>
-    <blockquote cite="https://azielcorpuslibrary.net/">
+    <blockquote cite="https://www.azielcorpuslibrary.net/">
       <p>What matters is the record.</p>
       <p>Not the name.</p>
       <p>I do not ask you to believe a name. I ask you to read a record.</p>
       <p>The public identity is the work. Opened without taking the speaker on faith.</p>
       <p>If the files hold, the name was never the point.</p>
     </blockquote>
-    <p class="source">Source: <a href="https://azielcorpuslibrary.net/">azielcorpuslibrary.net</a>, read ${REVIEWED}. Evidence label: verified document (public page).</p>
+    <p class="source">Source: <a href="https://www.azielcorpuslibrary.net/">www.azielcorpuslibrary.net</a>, read ${REVIEWED}. Evidence label: verified document (public page).</p>
     <h2>Doors</h2>
-    <p>Official cross-chain sister handles. Each one is a separate public project. A link does not mean this HVAC site runs that project, restates its findings, or is deployed.</p>
-    <p class="fine">These handles were requested on 5 November 2026. Each returned HTTP 200. This list is not a catalog and it is not a live-status claim.</p>
+    <p>Official cross-chain sister handles. Ten public doors. Each one is a separate project. A link does not mean this HVAC site runs that project or restates its findings.</p>
+    <p class="fine">These ten doors were live on ${DOORS_CHECKED}. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed. <a href="/doors/">/doors</a> redirects here.</p>
     <div class="grid-2">
-      <article class="door"><h3>Aziel Eliab</h3><p>Central identity and ecosystem overview.</p><a class="btn" href="https://www.azieleliab.com/">azieleliab.com</a></article>
-      <article class="door"><h3>Aziel Corpus Library</h3><p>Research archive and knowledge-library work.</p><a class="btn" href="https://azielcorpuslibrary.net/">azielcorpuslibrary.net</a></article>
-      <article class="door"><h3>Godlock</h3><p>Software and infrastructure entry for a different project. This HVAC guide does not use it to score quotes.</p><a class="btn" href="https://godlock.uk/">godlock.uk</a></article>
-      <article class="door"><h3>He Didn't Jump</h3><p>A separate public project. It has its own subject. It does not provide HVAC advice, and this site does not describe its findings.</p><a class="btn" href="https://hedidntjump.com/">hedidntjump.com</a></article>
-      <article class="door"><h3>Aziel Runtime</h3><p>Source repository and a hosted page. This site does not restate that software’s catalog and does not run it.</p><p><a class="btn" href="https://github.com/AzielEliab/aziel-runtime">Source repository</a></p><p><a class="btn secondary" href="https://aziel-runtime.vibelock.workers.dev/">Hosted page</a></p></article>
-      <article class="door"><h3>Time to Unseal the Book</h3><p>A separate public project. It has its own subject. It does not provide HVAC advice, and this site does not describe its findings.</p><a class="btn" href="https://timetounsealthebook.net/">timetounsealthebook.net</a></article>
-      <article class="door"><h3>The Furnace Isn't Free</h3><p>Consumer education about HVAC offer structure, quote transparency, and pricing claims. You are here.</p><a class="btn secondary" href="/">Current site</a></article>
+      <article class="door"><h3>Aziel Eliab</h3><p>Identity hub for the ecosystem. This HVAC guide does not turn that page into a quote.</p><a class="btn" href="https://www.azieleliab.com/">www.azieleliab.com</a></article>
+      <article class="door"><h3>Aziel Corpus Library</h3><p>Research archive and knowledge library. The canonical host is www.</p><a class="btn" href="https://www.azielcorpuslibrary.net/">www.azielcorpuslibrary.net</a></article>
+      <article class="door"><h3>GodLock</h3><p>Software and infrastructure entry for a different project. This HVAC guide does not use it to score quotes.</p><a class="btn" href="https://godlock.uk/">godlock.uk</a></article>
+      <article class="door"><h3>He Didn't Jump</h3><p>Marion Zioncheck Archive. A separate public project. It does not provide HVAC advice, and this site does not describe its findings.</p><a class="btn" href="https://hedidntjump.com/">hedidntjump.com</a></article>
+      <article class="door"><h3>The Furnace Isn't Free</h3><p>Homeowner guide to HVAC offer structure, quote transparency, and pricing claims. You are here. This site is live at furnaceisntfree.com.</p><a class="btn secondary" href="/">Current site</a></article>
+      <article class="door"><h3>Time to Unseal the Book</h3><p>A separate public project. It does not provide HVAC advice, and this site does not describe its findings.</p><a class="btn" href="https://timetounsealthebook.net/">timetounsealthebook.net</a></article>
+      <article class="door"><h3>Whitestone</h3><p>A live pro se web app. It does not price a furnace, and this HVAC guide does not give legal advice.</p><a class="btn" href="https://whitestone.vibelock.workers.dev/">whitestone.vibelock.workers.dev</a></article>
+      <article class="door"><h3>Aziel Runtime</h3><p>MCP and Softwares runtime. This HVAC site does not restate that catalog and does not run it.</p><div class="actions"><a class="btn" href="https://aziel-runtime.vibelock.workers.dev/">Hosted runtime</a><a class="btn secondary" href="${GLAMA_AZIEL_RUNTIME}">Glama listing</a><a class="btn secondary" href="https://github.com/AzielEliab/aziel-runtime">Source repository</a></div></article>
+      <article class="door"><h3>Trades Runtime</h3><p>Public MCP runtime. This listing does not state live_backends or pilot_started.</p><div class="actions"><a class="btn" href="https://trades-runtime.vibelock.workers.dev/">Hosted runtime</a><a class="btn secondary" href="${GLAMA_TRADES_RUNTIME}">Glama listing</a></div></article>
+      <article class="door"><h3>MirageGrid</h3><p>Cap-7 mesh DNS factory Worker. Mesh-only. public_icann is false. It is not an ICANN registrar, and this HVAC guide does not use it to register a public domain.</p><a class="btn" href="https://miragegrid.vibelock.workers.dev/">miragegrid.vibelock.workers.dev</a></article>
     </div>
     <h2>Deploy limits</h2>
-    <p>Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This door is not marked LIVE.</p>
+    <p>Cap-7 mesh DNS and public ICANN registration are different systems. MirageGrid is the mesh factory above, and it is not an ICANN registrar. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed.</p>
   </article>`
 });
 
@@ -1170,7 +1226,7 @@ const urls = [
   }),
   ...MACHINE_PATHS.map((machinePath) => {
     const priority = machinePath === "/cite.json" || machinePath === "/llms.txt" || machinePath === "/ai.txt" ? "0.6" : "0.8";
-    return `  <url><loc>${CANONICAL_ORIGIN}${machinePath}</loc><lastmod>2026-11-06</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
+    return `  <url><loc>${CANONICAL_ORIGIN}${machinePath}</loc><lastmod>${SURFACE_UPDATED}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
   })
 ].join("\n");
 await writeFile(
@@ -1304,23 +1360,30 @@ GET /api/health, GET /health, GET /version, and GET /api/version report the git 
 
 ## IndexNow
 Public key file: ${CANONICAL_ORIGIN}/${INDEXNOW_KEY}.txt
-The file body is the key. The Worker serves it as text/plain. Bing, Yandex, Seznam, and Naver can use that file to accept a later ping. This site does not call IndexNow and does not submit URLs. Indexing remains unconfirmed.
+Well-known key file: ${CANONICAL_ORIGIN}/.well-known/indexnow-key.txt
+Both file bodies are the same key. The Worker serves each as text/plain. Bing, Yandex, Seznam, and Naver can use that key to accept a later ping. This site does not call IndexNow and does not submit URLs. Indexing remains unconfirmed.
 
 ## Limits
-Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. Indexing is unconfirmed. This file is not a LIVE claim.
+Cap-7 mesh DNS and public ICANN registration are different systems. MirageGrid is mesh-only, public_icann is false, and it is not an ICANN registrar. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed.
+Trades Runtime is a public MCP runtime. This file does not state live_backends or pilot_started.
 
 ## Tip
 On 2026-11-06, production /health reported source_base_tip_short d47caa6d and noted_vid 6a781b04.
 Earlier Cos label 472bb7c4 / 87b12512 was not that response and is not called live.
-Health reports the git commit captured when the bundle was built. Indexing is unconfirmed. This file is not a deploy.
+Health reports the git commit captured when the bundle was built. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed.
 
 ## Sister doors
-Official hubs linked from /aziel, plus Softwares https://www.azieleliab.com/runtime/, both GitHub accounts, and Glama aziel-runtime.
-A link is not a deployment claim and not a catalog.
+Ten public doors linked from /aziel and /doors. Checked live on ${DOORS_CHECKED}. Canonical corpus host is https://www.azielcorpuslibrary.net/.
+Also linked: Softwares https://www.azieleliab.com/runtime/, the Aziel Runtime source repository, both GitHub accounts, and the Glama listings below.
+furnaceisntfree.com is live and deployed. A link does not mean this HVAC site runs another project.
 Each hub below is subjectOf and sameAs of the one person https://www.azieleliab.com/#aziel. None of these is an extra @id.
 ${SISTER_LINKS.map((url) => `- ${url}`).join("\n")}
 
-Indexing is requested. This document does not assert that any search engine has indexed the host.
+## Glama listings
+- ${GLAMA_AZIEL_RUNTIME}
+- ${GLAMA_TRADES_RUNTIME}
+
+Indexing is requested. Search-engine indexing is unconfirmed. This document does not assert that any search engine has indexed the host.
 `;
 await writeFile(path.join(publicDir, "llms.txt"), llms);
 await writeFile(path.join(publicDir, "ai.txt"), llms);
@@ -1348,7 +1411,8 @@ const cite = {
     publisher: { "@id": PERSON_ID }
   },
   reviewed: REVIEWED,
-  note: "One project in the Aziel Eliab ecosystem. Person @id is the single person node. alternateName values are that same person. Official hubs are subjectOf and sameAs. They are not extra @id values. This file does not restate other projects' catalogs, and it does not claim production DNS is live. Indexing is unconfirmed."
+  doors_checked: DOORS_CHECKED,
+  note: "One project in the Aziel Eliab ecosystem. Person @id is the single person node. alternateName values are that same person. Official hubs are subjectOf and sameAs. They are not extra @id values. This file does not restate other projects' catalogs. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed. MirageGrid is mesh-only and public_icann is false. Trades Runtime does not state live_backends or pilot_started."
 };
 await writeFile(path.join(publicDir, "cite.json"), JSON.stringify(cite, null, 2) + "\n");
 const personJson = JSON.stringify(personNode(), null, 2) + "\n";
@@ -1366,7 +1430,7 @@ const openapi = {
     version: "1.0.0",
     summary: "Page-view counter, usefulness receipts, and private offer notes.",
     description:
-      "Public reads are counts only. Receipt export and private JPEGs require RECEIPT_READ_TOKEN. This document does not mean the production domain is deployed."
+      "Public reads are counts only. Receipt export and private JPEGs require RECEIPT_READ_TOKEN. furnaceisntfree.com is live and deployed. This document does not confirm search-engine indexing."
   },
   servers: [{ url: CANONICAL_ORIGIN }, { url: "http://127.0.0.1:43127" }],
   paths: {
@@ -1401,11 +1465,19 @@ const openapi = {
         responses: { 200: { description: "text/plain key" } }
       }
     },
+    "/.well-known/indexnow-key.txt": {
+      get: {
+        summary: "IndexNow key file at the well-known path. Public by design. Does not submit URLs.",
+        responses: { 200: { description: "text/plain key" } }
+      }
+    },
     "/api/contact": { post: { summary: "Private contact message", responses: { 200: { description: "Stored" } } } }
   }
 };
 await writeFile(path.join(publicDir, "openapi.json"), JSON.stringify(openapi, null, 2) + "\n");
 await writeFile(path.join(publicDir, INDEXNOW_FILENAME), INDEXNOW_KEY);
+await mkdir(path.join(publicDir, ".well-known"), { recursive: true });
+await writeFile(path.join(publicDir, INDEXNOW_WELL_KNOWN_PATH.slice(1)), INDEXNOW_KEY);
 await writeSocialCard(path.join(publicDir, "images", "social-card.png"));
 
 console.log(`Rendered ${pages.length} pages into ${publicDir}`);

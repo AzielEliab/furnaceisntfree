@@ -313,6 +313,8 @@ textarea { min-height: 7rem; resize: vertical; }
 .meter strong { display: block; font-family: var(--mono); font-size: 1.4rem; color: var(--navy); }
 .char-count { font-variant-numeric: tabular-nums; }
 .door a.btn { margin-top: 0.6rem; }
+.door .actions { margin-top: 0.75rem; }
+.door .actions .btn { margin-top: 0; }
 blockquote {
   margin: 0.5rem 0 0.8rem;
   padding: 0.2rem 0 0.2rem 1rem;
