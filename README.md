@@ -2,7 +2,7 @@
 
 Homeowner guide to HVAC offer structure: what a “free furnace” allowance covers, what installation still costs, and how to compare written quotes without ranking contractors.
 
-Canonical host used in code and metadata: `https://furnaceisntfree.com`. `www.furnaceisntfree.com` is an alias. GET and HEAD 301 to the apex in one hop when this Worker receives the request, including a trailing slash on known HTML pages. The Worker runs before static assets so that redirect is not skipped. The www custom domain stays commented in `wrangler.toml`. Attaching that hostname is a Cloudflare bind, not something this repository can finish, and this tree does not deploy.
+Canonical host used in code and metadata: `https://furnaceisntfree.com`. The public host is live. `www.furnaceisntfree.com` is an alias. GET and HEAD 301 to the apex in one hop when this Worker receives the request, including a trailing slash on known HTML pages and `/doors` to `/aziel/`. The Worker runs before static assets so that redirect is not skipped. The www custom domain stays commented in `wrangler.toml`. Attaching that hostname is a Cloudflare bind, not something this repository can finish. This tree does not deploy a new build by itself.
 
 ## Run locally
 
@@ -32,7 +32,7 @@ Preferred host is Cloudflare Workers with static assets, matching the other Azie
 5. Uncomment the `furnaceisntfree.com` and `www.furnaceisntfree.com` routes in `wrangler.toml` only after that zone is on the same account. Leave them commented until an approved deploy. The www route is the custom-domain bind the Worker cannot create by itself.
 6. Deploy the whole site in one step: `npx wrangler deploy`. Do not publish a partial set of pages.
 
-A deploy is live only after `https://furnaceisntfree.com` responds with this site. A workers.dev preview is not that hostname. This repository does not claim a deploy until that command has succeeded.
+`https://furnaceisntfree.com` is the live public host. A workers.dev preview is not that hostname. Publishing a newer build still uses `npx wrangler deploy` on the account that owns the zone. This tree does not deploy by itself.
 
 Page-view durability on Cloudflare requires the `SITE_KV` binding. Without it, counts live only in the isolate that received them. Private JPEGs should use the `UPLOADS` R2 bucket. If R2 is absent and KV is present, JPEG bytes up to 2 MB are stored in KV. Larger files are refused with a clear error.
 

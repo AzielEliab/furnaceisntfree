@@ -10,9 +10,11 @@ Canonical host in code, sitemap, canonical tags, and receipt URLs: `https://furn
 
 A 5 November 2026 public read saw `https://www.furnaceisntfree.com/` return 200 with this site's apex canonical. That matches static assets answering before the Worker. `run_worker_first` is now true so a later deploy of this script can emit the 301 when the hostname already reaches this Worker. If www is on a different route, the commented custom domain still has to be attached on the owning account before the public host will redirect.
 
+On 19 November 2026 the public host `https://furnaceisntfree.com` was live. The footer, `/aziel/`, `llms.txt`, and `ai.txt` say that. Search-engine indexing stays unconfirmed. This change does not deploy and does not edit DNS. `thefurnaceisntfree.com` is still not a hostname this project uses.
+
 ## Hosting credentials
 
-`npx wrangler deploy` was run on 31 October 2026 and failed before any upload. Wrangler’s message: “In a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work.” `wrangler whoami` also says it is not authenticated. There is no Wrangler OAuth file. `https://furnaceisntfree.com` is not live from this work.
+`npx wrangler deploy` was run on 31 October 2026 and failed before any upload. Wrangler’s message: “In a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work.” `wrangler whoami` also says it is not authenticated. There is no Wrangler OAuth file. That October attempt did not publish this tree. The public host was live by 19 November 2026. This change still does not deploy.
 
 Public DNS for `furnaceisntfree.com` already uses Cloudflare nameservers (`mustafa.ns.cloudflare.com` and `virginia.ns.cloudflare.com`). The token must belong to the account that owns that zone. A connected Workers list can see other scripts in an account, and it cannot upload this script or edit DNS. This change does not submit Search Console, IndexNow, or DNS.
 
@@ -44,22 +46,26 @@ Checking “request review” does not publish anything. A public correction or 
 
 ## AZIEL links
 
-Official cross-chain sister handles on `/aziel`. Checked on 5 November 2026. A link is not a live-status claim. This change did not deploy the site.
+Ten public doors on `/aziel/`. `/doors` and `/doors/` 301 to `/aziel/`. Checked live on 19 November 2026. This change did not deploy the site.
 
-| Door | URL used | Result that day |
+| Door | Canonical URL | Note |
 | --- | --- | --- |
-| Aziel Eliab | https://www.azieleliab.com/ | HTTP 200. |
-| Aziel Corpus Library | https://azielcorpuslibrary.net/ | HTTP 200. Apex answered; www was not required. |
-| Godlock | https://godlock.uk/ | HTTP 200. |
-| He Didn't Jump | https://hedidntjump.com/ | HTTP 200. Copy stays neutral and does not summarize that project. |
-| Aziel Runtime source | https://github.com/AzielEliab/aziel-runtime | HTTP 200. |
-| Aziel Runtime hosted page | https://aziel-runtime.vibelock.workers.dev/ | HTTP 200. Not a catalog and not a claim that this site runs it. |
-| Time to Unseal the Book | https://timetounsealthebook.net/ | HTTP 200. Neutral description only. |
-| This site | https://furnaceisntfree.com/ | Canonical in this repo. Not deployed from this change. |
+| Aziel Eliab | https://www.azieleliab.com/ | Identity hub. |
+| Aziel Corpus Library | https://www.azielcorpuslibrary.net/ | Canonical host is www, not the bare apex. |
+| GodLock | https://godlock.uk/ | Separate project. Not used to score quotes. |
+| He Didn't Jump | https://hedidntjump.com/ | Marion Zioncheck Archive. HVAC copy stays neutral. |
+| The Furnace Isn't Free | https://furnaceisntfree.com/ | This site. Live. |
+| Time to Unseal the Book | https://timetounsealthebook.net/ | Separate project. HVAC copy stays neutral. |
+| Whitestone | https://whitestone.vibelock.workers.dev/ | Live pro se web app. Not legal advice from this HVAC guide. |
+| Aziel Runtime | https://aziel-runtime.vibelock.workers.dev/ | MCP and Softwares runtime. Glama: https://glama.ai/mcp/servers/AzielEliab/aziel-runtime. Source: https://github.com/AzielEliab/aziel-runtime. |
+| Trades Runtime | https://trades-runtime.vibelock.workers.dev/ | Public MCP runtime. Glama: https://glama.ai/mcp/servers/AzielEliab/trades-runtime. live_backends and pilot_started are not stated. |
+| MirageGrid | https://miragegrid.vibelock.workers.dev/ | Cap-7 mesh DNS factory. Mesh-only. public_icann is false. Not an ICANN registrar. |
 
-Stance quotations on the page are still the text read on 31 October 2026 from `https://www.azieleliab.com/aziel` and `https://azielcorpuslibrary.net/`. They were not re-fetched on 5 November 2026.
+Softwares at `https://www.azieleliab.com/runtime/` stays on machine surfaces with the two GitHub accounts and `https://x.com/AzielEliab`. It is not an eleventh door.
 
-Not on this door list: trades-runtime and the Glama directory. They were not already on the page, so they were not added. No other routes were invented. `cite.json` person `sameAs` stays the identity URLs only.
+Excluded: `thefurnaceisntfree.com`, private repos `lumen` and `ark-private`, and any `*-download-tracker` URL.
+
+Stance quotations on the page are still the text read on 31 October 2026 from `https://www.azieleliab.com/aziel` and the corpus page. The corpus link now uses the www canonical host. The quotation was not re-fetched for this change.
 
 ## Stance
 
@@ -73,10 +79,12 @@ The visual spec mentioned HVAC photography. This build uses an HTML diagram so i
 
 The terms page does not name a governing law. Add one only after the owner confirms the jurisdiction.
 
-## What was not marked live
+## What stays unconfirmed
 
-- Production DNS
 - Search-engine indexing (files allow crawling; they do not prove an index)
 - Corpus ingest
 - OCR of uploaded invoices
 - A dataset behind any “usual” labor or equipment price
+- Trades Runtime `live_backends` and `pilot_started`
+
+`https://furnaceisntfree.com` is live. That is separate from the items above.
