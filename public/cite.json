@@ -84,14 +84,17 @@
   ],
   "relatedLink": [
     "https://www.azieleliab.com/",
-    "https://www.azieleliab.com/runtime/",
-    "https://azielcorpuslibrary.net/",
+    "https://www.azielcorpuslibrary.net/",
     "https://godlock.uk/",
     "https://hedidntjump.com/",
-    "https://github.com/AzielEliab/aziel-runtime",
-    "https://aziel-runtime.vibelock.workers.dev/",
+    "https://furnaceisntfree.com/",
     "https://timetounsealthebook.net/",
-    "https://furnaceisntfree.com/"
+    "https://whitestone.vibelock.workers.dev/",
+    "https://aziel-runtime.vibelock.workers.dev/",
+    "https://trades-runtime.vibelock.workers.dev/",
+    "https://miragegrid.vibelock.workers.dev/",
+    "https://www.azieleliab.com/runtime/",
+    "https://github.com/AzielEliab/aziel-runtime"
   ],
   "tip_observation": {
     "observed_on": "2026-11-06",
@@ -100,7 +103,8 @@
     "earlier_cos_label_not_live": "472bb7c4",
     "earlier_version_prefix_not_live": "87b12512",
     "indexing": "unconfirmed",
-    "note": "Production /health on that date reported d47caa6d and 6a781b04. The earlier Cos label is not that response and is not called live. This file does not deploy. Indexing is unconfirmed."
+    "doors_checked": "2026-11-19",
+    "note": "Production /health on that date reported d47caa6d and 6a781b04. The earlier Cos label is not that response and is not called live. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed."
   },
   "person": {
     "@context": "https://schema.org",
@@ -217,87 +221,120 @@
         "name": "researcher"
       }
     ],
-    "description": "Aziel Eliab is one person, @id https://www.azieleliab.com/#aziel, and the author of The Furnace Isn't Free. alternateName lists other names of this same person already published on the official hubs, including Hebrew forms and common misspellings. sameAs lists those hubs, both GitHub accounts, Glama aziel-runtime, Softwares at https://www.azieleliab.com/runtime/, and this site. Those URLs are not extra @id values.",
+    "description": "Aziel Eliab is one person, @id https://www.azieleliab.com/#aziel, and the author of The Furnace Isn't Free. alternateName lists other names of this same person already published on the official hubs, including Hebrew forms and common misspellings. sameAs lists the public doors, both GitHub accounts, the Glama listings for aziel-runtime and trades-runtime, Softwares at https://www.azieleliab.com/runtime/, and this site. Those URLs are not extra @id values.",
     "disambiguatingDescription": "One person. Every alternateName refers to https://www.azieleliab.com/#aziel. This site does not add a second person.",
     "url": "https://www.azieleliab.com/",
     "sameAs": [
       "https://www.azieleliab.com/#aziel",
       "https://www.azieleliab.com/",
-      "https://www.azieleliab.com/runtime/",
-      "https://azielcorpuslibrary.net/",
+      "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
       "https://hedidntjump.com/",
-      "https://github.com/AzielEliab/aziel-runtime",
-      "https://aziel-runtime.vibelock.workers.dev/",
-      "https://timetounsealthebook.net/",
       "https://furnaceisntfree.com/",
+      "https://timetounsealthebook.net/",
+      "https://whitestone.vibelock.workers.dev/",
+      "https://aziel-runtime.vibelock.workers.dev/",
+      "https://trades-runtime.vibelock.workers.dev/",
+      "https://miragegrid.vibelock.workers.dev/",
+      "https://www.azieleliab.com/runtime/",
+      "https://github.com/AzielEliab/aziel-runtime",
       "https://github.com/AzielEliab",
       "https://github.com/azieltherevealerofthesealed-arch",
       "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+      "https://glama.ai/mcp/servers/AzielEliab/trades-runtime",
       "https://x.com/AzielEliab"
     ],
     "subjectOf": [
       {
         "@type": "WebSite",
         "name": "Aziel Eliab",
-        "url": "https://www.azieleliab.com/"
-      },
-      {
-        "@type": "WebSite",
-        "name": "Aziel Runtime",
-        "url": "https://www.azieleliab.com/runtime/"
+        "url": "https://www.azieleliab.com/",
+        "description": "Identity hub."
       },
       {
         "@type": "WebSite",
         "name": "Aziel Corpus Library",
-        "url": "https://azielcorpuslibrary.net/"
+        "url": "https://www.azielcorpuslibrary.net/",
+        "description": "Research archive and knowledge library. Canonical host is www."
       },
       {
         "@type": "WebSite",
-        "name": "Godlock",
-        "url": "https://godlock.uk/"
+        "name": "GodLock",
+        "url": "https://godlock.uk/",
+        "description": "Separate software and infrastructure project."
       },
       {
         "@type": "WebSite",
         "name": "He Didn't Jump",
-        "url": "https://hedidntjump.com/"
+        "url": "https://hedidntjump.com/",
+        "description": "Marion Zioncheck Archive. A separate public project."
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://furnaceisntfree.com/#website",
+        "name": "The Furnace Isn't Free",
+        "url": "https://furnaceisntfree.com/",
+        "description": "Homeowner guide to HVAC offer structure. Live at furnaceisntfree.com."
+      },
+      {
+        "@type": "WebSite",
+        "name": "Time to Unseal the Book",
+        "url": "https://timetounsealthebook.net/",
+        "description": "A separate public project."
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Whitestone",
+        "url": "https://whitestone.vibelock.workers.dev/",
+        "description": "Live pro se web app."
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Aziel Runtime",
+        "url": "https://aziel-runtime.vibelock.workers.dev/",
+        "description": "MCP and Softwares runtime."
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Trades Runtime",
+        "url": "https://trades-runtime.vibelock.workers.dev/",
+        "description": "Public MCP runtime. live_backends and pilot_started are not stated."
+      },
+      {
+        "@type": "WebApplication",
+        "name": "MirageGrid",
+        "url": "https://miragegrid.vibelock.workers.dev/",
+        "description": "Cap-7 mesh DNS factory Worker. Mesh-only. public_icann is false. Not an ICANN registrar."
+      },
+      {
+        "@type": "WebSite",
+        "name": "Aziel Runtime Softwares",
+        "url": "https://www.azieleliab.com/runtime/"
       },
       {
         "@type": "SoftwareSourceCode",
         "name": "Aziel Runtime source",
         "url": "https://github.com/AzielEliab/aziel-runtime",
         "codeRepository": "https://github.com/AzielEliab/aziel-runtime"
-      },
-      {
-        "@type": "WebSite",
-        "name": "Aziel Runtime hosted page",
-        "url": "https://aziel-runtime.vibelock.workers.dev/"
-      },
-      {
-        "@type": "WebSite",
-        "name": "Time to Unseal the Book",
-        "url": "https://timetounsealthebook.net/"
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://furnaceisntfree.com/#website",
-        "name": "The Furnace Isn't Free",
-        "url": "https://furnaceisntfree.com/"
       }
     ],
     "relatedLink": [
       "https://www.azieleliab.com/",
-      "https://www.azieleliab.com/runtime/",
-      "https://azielcorpuslibrary.net/",
+      "https://www.azielcorpuslibrary.net/",
       "https://godlock.uk/",
       "https://hedidntjump.com/",
-      "https://github.com/AzielEliab/aziel-runtime",
-      "https://aziel-runtime.vibelock.workers.dev/",
-      "https://timetounsealthebook.net/",
       "https://furnaceisntfree.com/",
+      "https://timetounsealthebook.net/",
+      "https://whitestone.vibelock.workers.dev/",
+      "https://aziel-runtime.vibelock.workers.dev/",
+      "https://trades-runtime.vibelock.workers.dev/",
+      "https://miragegrid.vibelock.workers.dev/",
+      "https://www.azieleliab.com/runtime/",
+      "https://github.com/AzielEliab/aziel-runtime",
       "https://github.com/AzielEliab",
       "https://github.com/azieltherevealerofthesealed-arch",
       "https://glama.ai/mcp/servers/AzielEliab/aziel-runtime",
+      "https://glama.ai/mcp/servers/AzielEliab/trades-runtime",
       "https://x.com/AzielEliab"
     ],
     "knowsLanguage": [
@@ -319,5 +356,6 @@
     }
   },
   "reviewed": "2026-10-31",
-  "note": "One project in the Aziel Eliab ecosystem. Person @id is the single person node. alternateName values are that same person. Official hubs are subjectOf and sameAs. They are not extra @id values. This file does not restate other projects' catalogs, and it does not claim production DNS is live. Indexing is unconfirmed."
+  "doors_checked": "2026-11-19",
+  "note": "One project in the Aziel Eliab ecosystem. Person @id is the single person node. alternateName values are that same person. Official hubs are subjectOf and sameAs. They are not extra @id values. This file does not restate other projects' catalogs. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed. MirageGrid is mesh-only and public_icann is false. Trades Runtime does not state live_backends or pilot_started."
 }

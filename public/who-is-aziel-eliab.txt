@@ -76,29 +76,36 @@ Roles already used for this person: digital rights activist, software developer,
 sameAs:
 - https://www.azieleliab.com/#aziel
 - https://www.azieleliab.com/
-- https://www.azieleliab.com/runtime/
-- https://azielcorpuslibrary.net/
+- https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
 - https://hedidntjump.com/
-- https://github.com/AzielEliab/aziel-runtime
-- https://aziel-runtime.vibelock.workers.dev/
-- https://timetounsealthebook.net/
 - https://furnaceisntfree.com/
+- https://timetounsealthebook.net/
+- https://whitestone.vibelock.workers.dev/
+- https://aziel-runtime.vibelock.workers.dev/
+- https://trades-runtime.vibelock.workers.dev/
+- https://miragegrid.vibelock.workers.dev/
+- https://www.azieleliab.com/runtime/
+- https://github.com/AzielEliab/aziel-runtime
 - https://github.com/AzielEliab
 - https://github.com/azieltherevealerofthesealed-arch
 - https://glama.ai/mcp/servers/AzielEliab/aziel-runtime
+- https://glama.ai/mcp/servers/AzielEliab/trades-runtime
 - https://x.com/AzielEliab
 
 subjectOf hubs, also listed in sameAs:
 - https://www.azieleliab.com/
-- https://www.azieleliab.com/runtime/
-- https://azielcorpuslibrary.net/
+- https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
 - https://hedidntjump.com/
-- https://github.com/AzielEliab/aziel-runtime
-- https://aziel-runtime.vibelock.workers.dev/
-- https://timetounsealthebook.net/
 - https://furnaceisntfree.com/
+- https://timetounsealthebook.net/
+- https://whitestone.vibelock.workers.dev/
+- https://aziel-runtime.vibelock.workers.dev/
+- https://trades-runtime.vibelock.workers.dev/
+- https://miragegrid.vibelock.workers.dev/
+- https://www.azieleliab.com/runtime/
+- https://github.com/AzielEliab/aziel-runtime
 
 Machine files:
 - https://furnaceisntfree.com/person.jsonld
@@ -113,10 +120,12 @@ Machine files:
 Tip:
 On 2026-11-06, production /health reported source_base_tip_short d47caa6d and noted_vid 6a781b04.
 Earlier Cos label 472bb7c4 / 87b12512 was not that response and is not called live.
-Health reports the git commit captured when the bundle was built. Indexing is unconfirmed. This file is not a deploy.
+Health reports the git commit captured when the bundle was built. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed.
 
 Limits:
 Cap-7 mesh DNS and public ICANN registration are different systems. Paid satellite is HELD. Remain-OFF locks stay off. Mesh tracking stays off.
+MirageGrid is mesh-only. public_icann is false. It is not an ICANN registrar.
+Trades Runtime is a public MCP runtime. This file does not state live_backends or pilot_started.
 Growth-ON: search, AI input, and AI train are allowed.
 www.furnaceisntfree.com 301s to the apex when the request reaches this Worker. That is not a Search Console property check.
 This file does not call IndexNow and does not submit URLs.
