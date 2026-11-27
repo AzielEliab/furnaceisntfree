@@ -8,7 +8,7 @@ npm test
 
 That command renders `public/` and runs `node --test test/*.test.mjs`.
 
-Last run during this build: 23 tests, 23 passed. The run checks that public URLs use `https://furnaceisntfree.com`, that GET and HEAD on `www.furnaceisntfree.com` 301 to the apex in one hop (including `/`, `/aziel`, `/aziel/`, `/doors`, `/doors/`, `/robots.txt`, and `/sitemap.xml`), that known HTML aliases use 301, that `/.well-known/indexnow-key.txt` returns the IndexNow key as `text/plain`, that HTML and text responses send `Content-Signal`, and that `/stats` stays JSON.
+Last run during this build: 24 tests, 24 passed. The run checks that public URLs use `https://furnaceisntfree.com`, that GET and HEAD on `www.furnaceisntfree.com` 301 to the apex in one hop (including `/`, `/aziel`, `/aziel/`, `/doors`, `/doors/`, `/robots.txt`, `/sitemap.xml`, and `/rss.xml`), that `/feed`, `/rss`, and `/feed.xml` 301 to `/rss.xml`, that known HTML aliases use 301, that `/.well-known/indexnow-key.txt` returns the IndexNow key as `text/plain`, that HTML and text responses send `Content-Signal`, and that `/stats` stays JSON.
 
 Covered:
 
@@ -28,6 +28,7 @@ Covered:
 - `robots.txt` allows crawlers including GPTBot and sets `Content-Signal: search=yes, ai-input=yes, ai-train=yes`.
 - `cite.json` Person `@id` and `sameAs` include `https://www.azieleliab.com/#aziel`.
 - `sitemap.xml` lists every public route. `llms.txt` and `ai.txt` match and include the calculator formula.
+- `/rss.xml` is RSS 2.0. Each public HTML page is one item. Links use `https://furnaceisntfree.com`. The response content type is `application/rss+xml`.
 
 ## Manual checks in this build
 

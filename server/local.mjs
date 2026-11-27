@@ -110,8 +110,14 @@ const server = createServer(async (req, res) => {
       const data = await readFile(file);
       const ext = path.extname(file);
       const pathname = new URL(req.url, "http://127.0.0.1").pathname;
+      const contentType =
+        pathname === "/who-is"
+          ? "text/plain; charset=utf-8"
+          : pathname === "/rss.xml"
+            ? "application/rss+xml; charset=utf-8"
+            : MIME[ext] || "application/octet-stream";
       const headers = {
-        "content-type": pathname === "/who-is" ? "text/plain; charset=utf-8" : MIME[ext] || "application/octet-stream",
+        "content-type": contentType,
         "x-content-type-options": "nosniff",
         "content-signal": "search=yes, ai-input=yes, ai-train=yes",
         "referrer-policy": "no-referrer"

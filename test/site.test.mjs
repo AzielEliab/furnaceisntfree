@@ -6,7 +6,7 @@ import test from "node:test";
 import { handleRequest } from "../lib/api.mjs";
 import { INDEXNOW_KEY, INDEXNOW_FILENAME, INDEXNOW_PATH, INDEXNOW_WELL_KNOWN_PATH } from "../lib/indexnow.mjs";
 import worker from "../src/worker.js";
-import { CANONICAL_HTML_PATH, PATHS, canonicalRedirectUrl } from "../lib/paths.mjs";
+import { CANONICAL_HTML_PATH, FEED_PATH, PATHS, canonicalRedirectUrl } from "../lib/paths.mjs";
 import { createMemoryStore } from "../lib/store-memory.mjs";
 import {
   analyzeQuotes,
@@ -381,8 +381,10 @@ test("discovery files allow indexing signals and cite the person id", async () =
     return match[1];
   };
   assert.equal(lastmod("https://furnaceisntfree.com/aziel/"), "2026-11-20");
-  assert.equal(lastmod("https://furnaceisntfree.com/llms.txt"), "2026-11-20");
-  assert.equal(lastmod("https://furnaceisntfree.com/ai.txt"), "2026-11-20");
+  assert.equal(lastmod("https://furnaceisntfree.com/llms.txt"), "2026-11-27");
+  assert.equal(lastmod("https://furnaceisntfree.com/ai.txt"), "2026-11-27");
+  assert.equal(lastmod("https://furnaceisntfree.com/rss.xml"), "2026-11-27");
+  assert.equal(lastmod("https://furnaceisntfree.com/person.jsonld"), "2026-11-20");
   assert.equal(lastmod("https://furnaceisntfree.com/the-numbers/"), "2026-11-05");
   assert.equal(lastmod("https://furnaceisntfree.com/how-the-offer-works/"), "2026-11-05");
   assert.equal(lastmod("https://furnaceisntfree.com/discount-reality-check/"), "2026-11-05");
@@ -612,7 +614,13 @@ test("www and HTML aliases end on the apex in one hop", async () => {
     ["https://www.furnaceisntfree.com/stats", "https://furnaceisntfree.com/stats"],
     ["https://www.furnaceisntfree.com/images/social-card.png", "https://furnaceisntfree.com/images/social-card.png"],
     ["https://www.furnaceisntfree.com/who-is", "https://furnaceisntfree.com/who-is"],
-    ["https://www.furnaceisntfree.com/person.jsonld", "https://furnaceisntfree.com/person.jsonld"]
+    ["https://www.furnaceisntfree.com/person.jsonld", "https://furnaceisntfree.com/person.jsonld"],
+    ["https://furnaceisntfree.com/feed", "https://furnaceisntfree.com/rss.xml"],
+    ["https://furnaceisntfree.com/feed/", "https://furnaceisntfree.com/rss.xml"],
+    ["https://furnaceisntfree.com/rss", "https://furnaceisntfree.com/rss.xml"],
+    ["https://furnaceisntfree.com/rss/", "https://furnaceisntfree.com/rss.xml"],
+    ["https://www.furnaceisntfree.com/feed.xml?x=1", "https://furnaceisntfree.com/rss.xml?x=1"],
+    ["https://www.furnaceisntfree.com/rss.xml", "https://furnaceisntfree.com/rss.xml"]
   ];
   for (const [from, to] of cases) {
     for (const method of ["GET", "HEAD"]) {
@@ -635,6 +643,9 @@ test("www and HTML aliases end on the apex in one hop", async () => {
   assert.notEqual(post.status, 308);
   const postPage = await worker.fetch(new Request("https://furnaceisntfree.com/aziel", { method: "POST", body: "x" }), {});
   assert.notEqual(postPage.status, 301);
+  const postFeed = await worker.fetch(new Request("https://furnaceisntfree.com/feed", { method: "POST", body: "x" }), {});
+  assert.notEqual(postFeed.status, 301);
+  assert.equal(canonicalRedirectUrl("https://furnaceisntfree.com/rss.xml", "GET"), null);
 });
 
 test("/stats stays JSON and slash HTML aliases are permanent", async () => {
@@ -801,6 +812,53 @@ test("indexnow key is public text and is not submitted", async () => {
   const wellKnownWww = await worker.fetch(new Request(`https://www.furnaceisntfree.com${INDEXNOW_WELL_KNOWN_PATH}`), {});
   assert.equal(wellKnownWww.status, 301);
   assert.equal(wellKnownWww.headers.get("location"), `https://furnaceisntfree.com${INDEXNOW_WELL_KNOWN_PATH}`);
+});
+
+test("RSS feed lists every public page on the apex", async () => {
+  const feed = await readFile(path.join(publicDir, "rss.xml"), "utf8");
+  assert.match(feed, /^<\?xml version="1\.0" encoding="UTF-8"\?>/);
+  assert.match(feed, /<rss version="2\.0"/);
+  assert.equal(feed.includes("thefurnaceisntfree.com"), false);
+  assert.equal(feed.includes("www.furnaceisntfree.com"), false);
+  assert.match(feed, /<link>https:\/\/furnaceisntfree\.com\/<\/link>/);
+  assert.match(feed, /<atom:link href="https:\/\/furnaceisntfree\.com\/rss\.xml" rel="self" type="application\/rss\+xml"\/>/);
+  assert.match(feed, /<dc:creator>Aziel Eliab<\/dc:creator>/);
+  const links = [...feed.matchAll(/<link>([^<]+)<\/link>/g)].map((match) => match[1]);
+  assert.equal(links[0], "https://furnaceisntfree.com/");
+  const itemLinks = links.slice(1);
+  assert.equal(itemLinks.length, PATHS.length);
+  for (const pagePath of PATHS) {
+    const loc = pagePath === "/" ? "https://furnaceisntfree.com/" : `https://furnaceisntfree.com${pagePath}`;
+    assert.ok(itemLinks.includes(loc), loc);
+    assert.match(feed, new RegExp(`<guid isPermaLink="true">${loc.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</guid>`));
+  }
+  assert.equal(itemLinks[0], "https://furnaceisntfree.com/aziel/");
+  assert.match(feed, /<lastBuildDate>Fri, 20 Nov 2026 00:00:00 GMT<\/lastBuildDate>/);
+  const home = await readFile(path.join(publicDir, "index.html"), "utf8");
+  assert.match(
+    home,
+    /<link rel="alternate" type="application\/rss\+xml" title="The Furnace Isn't Free" href="https:\/\/furnaceisntfree\.com\/rss\.xml">/
+  );
+  assert.match(home, /href="\/rss\.xml"/);
+  const robots = await readFile(path.join(publicDir, "robots.txt"), "utf8");
+  assert.match(robots, /Allow: \/rss\.xml/);
+  const llms = await readFile(path.join(publicDir, "llms.txt"), "utf8");
+  assert.match(llms, /RSS 2\.0: https:\/\/furnaceisntfree\.com\/rss\.xml/);
+  const cite = JSON.parse(await readFile(path.join(publicDir, "cite.json"), "utf8"));
+  assert.equal(cite.feed, "https://furnaceisntfree.com/rss.xml");
+  const assets = {
+    async fetch() {
+      return new Response(feed, { headers: { "content-type": "application/xml" } });
+    }
+  };
+  const response = await worker.fetch(new Request(`https://furnaceisntfree.com${FEED_PATH}`), { ASSETS: assets });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("content-type"), "application/rss+xml; charset=utf-8");
+  assert.equal(response.headers.get("content-signal"), "search=yes, ai-input=yes, ai-train=yes");
+  assert.equal(await response.text(), feed);
+  const head = await worker.fetch(new Request(`https://furnaceisntfree.com${FEED_PATH}`, { method: "HEAD" }), { ASSETS: assets });
+  assert.equal(head.status, 200);
+  assert.equal(head.headers.get("content-type"), "application/rss+xml; charset=utf-8");
 });
 
 test("HTML and text responses send Content-Signal", async () => {
