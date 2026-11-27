@@ -2,7 +2,7 @@
 
 Homeowner guide to HVAC offer structure: what a “free furnace” allowance covers, what installation still costs, and how to compare written quotes without ranking contractors.
 
-Canonical host used in code and metadata: `https://furnaceisntfree.com`. The public host is live. `www.furnaceisntfree.com` is an alias. GET and HEAD 301 to the apex in one hop when this Worker receives the request, including a trailing slash on known HTML pages and `/doors` to `/aziel/`. The Worker runs before static assets so that redirect is not skipped. The www custom domain stays commented in `wrangler.toml`. Attaching that hostname is a Cloudflare bind, not something this repository can finish. This tree does not deploy a new build by itself.
+Canonical host used in code and metadata: `https://furnaceisntfree.com`. The public host is live. `www.furnaceisntfree.com` is an alias. GET and HEAD 301 to the apex in one hop when this Worker receives the request, including a trailing slash on known HTML pages and `/doors` to `/aziel/`. `/rss.xml` is the RSS 2.0 feed of the public HTML pages. `/feed`, `/feed/`, `/rss`, `/rss/`, and `/feed.xml` 301 to that file on the same hop. The Worker runs before static assets so that redirect is not skipped. The www custom domain stays commented in `wrangler.toml`. Attaching that hostname is a Cloudflare bind, not something this repository can finish. This tree does not deploy a new build by itself.
 
 ## Run locally
 

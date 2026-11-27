@@ -1,5 +1,5 @@
 import { handleRequest } from "../lib/api.mjs";
-import { canonicalRedirectUrl } from "../lib/paths.mjs";
+import { FEED_PATH, canonicalRedirectUrl } from "../lib/paths.mjs";
 import { createKvStore } from "../lib/store-kv.mjs";
 import { createMemoryStore } from "../lib/store-memory.mjs";
 
@@ -19,6 +19,7 @@ function isHtmlOrText(contentType) {
     type.startsWith("text/") ||
     type.includes("application/json") ||
     type.includes("application/ld+json") ||
+    type.includes("application/rss+xml") ||
     type.includes("application/xml") ||
     type.includes("application/javascript") ||
     type.includes("application/manifest+json")
@@ -56,7 +57,8 @@ const MACHINE_TYPES = new Map([
   ["/identity.jsonld", "application/ld+json; charset=utf-8"],
   ["/graph.jsonld", "application/ld+json; charset=utf-8"],
   ["/who-is", "text/plain; charset=utf-8"],
-  ["/who-is-aziel-eliab.txt", "text/plain; charset=utf-8"]
+  ["/who-is-aziel-eliab.txt", "text/plain; charset=utf-8"],
+  [FEED_PATH, "application/rss+xml; charset=utf-8"]
 ]);
 
 export default {

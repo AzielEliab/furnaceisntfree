@@ -116,6 +116,7 @@ Machine files:
 - https://furnaceisntfree.com/cite.json
 - https://furnaceisntfree.com/llms.txt
 - https://furnaceisntfree.com/ai.txt
+RSS 2.0: https://furnaceisntfree.com/rss.xml
 
 Tip:
 On 2026-11-06, production /health reported source_base_tip_short d47caa6d and noted_vid 6a781b04.

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+  <title>The Furnace Isn&apos;t Free</title>
+  <link>https://furnaceisntfree.com/</link>
+  <atom:link href="https://furnaceisntfree.com/rss.xml" rel="self" type="application/rss+xml"/>
+  <description>A homeowner guide to free-furnace promotions. Separate the headline from equipment price, allowance, installation, and the total installed price.</description>
+  <language>en</language>
+  <lastBuildDate>Fri, 20 Nov 2026 00:00:00 GMT</lastBuildDate>
+  <generator>the-furnace-isnt-free</generator>
+  <docs>https://www.rssboard.org/rss-specification</docs>
+  <item>
+    <title>AZIEL | One ecosystem, multiple doors</title>
+    <link>https://furnaceisntfree.com/aziel/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/aziel/</guid>
+    <description>The Furnace Isn&apos;t Free is one public project in the Aziel Eliab ecosystem. Each linked door keeps its own purpose.</description>
+    <pubDate>Fri, 20 Nov 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>The Furnace Isn&apos;t Free | HVAC quote transparency</title>
+    <link>https://furnaceisntfree.com/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/</guid>
+    <description>A homeowner guide to free-furnace promotions. Separate the headline from equipment price, allowance, installation, and the total installed price.</description>
+    <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>About and contact | The Furnace Isn&apos;t Free</title>
+    <link>https://furnaceisntfree.com/about/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/about/</guid>
+    <description>Who publishes this HVAC quote guide, how to ask for a correction, and what the site does not do.</description>
+    <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>How Free-Furnace Offers Work | Installed Cost</title>
+    <link>https://furnaceisntfree.com/how-the-offer-works/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/how-the-offer-works/</guid>
+    <description>How an HVAC package allowance differs from a zero-cost installed furnace, and what to compare on an itemized estimate.</description>
+    <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Furnace Cost Calculator | Equipment, Labor &amp; Allowance</title>
+    <link>https://furnaceisntfree.com/the-numbers/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/the-numbers/</guid>
+    <description>Define MSRP, allowance, and installed cost, then calculate net equipment, labor ratio, and package difference without turning blanks into zero.</description>
+    <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>HVAC Discount Reality Check | Offer Terms</title>
+    <link>https://furnaceisntfree.com/discount-reality-check/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/discount-reality-check/</guid>
+    <description>Check whether a furnace or AC promotional price names its reference, dates, exclusions, and restrictions. No deception ruling.</description>
+    <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Compare HVAC quotes side by side | No automatic winner</title>
+    <link>https://furnaceisntfree.com/compare-quotes/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/compare-quotes/</guid>
+    <description>Compare up to three furnace and AC quotes. Missing scope is flagged. Contractors are not ranked.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Homeowner HVAC checklist | Questions before you authorize work</title>
+    <link>https://furnaceisntfree.com/checklist/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/checklist/</guid>
+    <description>A printable checklist for furnace and air-conditioner quotes: model, allowance, labor, exclusions, warranty, and total installed price.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Should I replace my furnace? Questions to ask first</title>
+    <link>https://furnaceisntfree.com/repair-or-replace/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/repair-or-replace/</guid>
+    <description>A repair-or-replace question builder for HVAC visits. It does not diagnose equipment and does not decide whether a furnace is safe.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Evidence and method | Business Ambiguity Lattice</title>
+    <link>https://furnaceisntfree.com/evidence/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/evidence/</guid>
+    <description>Five layers for reading a commercial claim: claim, reference, conditions, total, and verification. Includes a labeled illustrative case.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Submit an HVAC offer privately</title>
+    <link>https://furnaceisntfree.com/submit/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/submit/</guid>
+    <description>Send a redacted furnace or AC offer for private review. Nothing is published unless you ask and a later review agrees. JPEG invoices only.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Privacy | The Furnace Isn&apos;t Free</title>
+    <link>https://furnaceisntfree.com/privacy/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/privacy/</guid>
+    <description>What this HVAC guide stores, what stays private, and how to ask for deletion.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Terms | The Furnace Isn&apos;t Free</title>
+    <link>https://furnaceisntfree.com/terms/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/terms/</guid>
+    <description>Informational terms for the furnace quote guide and its calculators.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Editorial disclosure | The Furnace Isn&apos;t Free</title>
+    <link>https://furnaceisntfree.com/editorial/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/editorial/</guid>
+    <description>How claims, examples, and corrections are labeled on this HVAC transparency site.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>Corrections | The Furnace Isn&apos;t Free</title>
+    <link>https://furnaceisntfree.com/corrections/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/corrections/</guid>
+    <description>Public correction log for The Furnace Isn&apos;t Free. No corrections have been issued yet.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+  <item>
+    <title>View and usefulness counts | The Furnace Isn&apos;t Free</title>
+    <link>https://furnaceisntfree.com/stats/</link>
+    <guid isPermaLink="true">https://furnaceisntfree.com/stats/</guid>
+    <description>First-party page-view counts and calculator feedback totals for this server.</description>
+    <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+    <dc:creator>Aziel Eliab</dc:creator>
+  </item>
+</channel>
+</rss>

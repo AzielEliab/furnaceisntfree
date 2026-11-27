@@ -20,6 +20,7 @@ Allow: /api/health
 Allow: /health
 Allow: /version
 Allow: /sitemap.xml
+Allow: /rss.xml
 Allow: /llms.txt
 Allow: /ai.txt
 Allow: /cite.json
@@ -73,5 +74,8 @@ Allow: /
 
 User-agent: Amazonbot
 Allow: /
+
+# RSS 2.0 feed: https://furnaceisntfree.com/rss.xml
+# GET and HEAD for /feed, /feed/, /rss, /rss/, and /feed.xml 301 to that file.
 
 Sitemap: https://furnaceisntfree.com/sitemap.xml

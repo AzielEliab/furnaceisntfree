@@ -114,6 +114,13 @@ It does not decide whether a furnace is safe.
 - https://furnaceisntfree.com/corrections/
 - https://furnaceisntfree.com/stats/
 
+## Feed
+RSS 2.0: https://furnaceisntfree.com/rss.xml
+Content type: application/rss+xml; charset=utf-8
+Each item is one public HTML page on https://furnaceisntfree.com. The item date is that page's content date.
+GET and HEAD for /feed, /feed/, /rss, /rss/, and /feed.xml 301 to /rss.xml when this Worker receives the request. www follows the same one-hop apex redirect.
+This file does not submit the feed to a reader or to IndexNow.
+
 ## Calculator
 Blank money inputs stay unknown. Explicit 0 is zero.
 Net equipment after allowance = max(0, equipment price − allowance).

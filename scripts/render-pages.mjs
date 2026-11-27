@@ -1,7 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { INDEXNOW_KEY, INDEXNOW_FILENAME, INDEXNOW_PATH, INDEXNOW_WELL_KNOWN_PATH } from "../lib/indexnow.mjs";
-import { CANONICAL_HOST, CANONICAL_ORIGIN, PATHS } from "../lib/paths.mjs";
+import { CANONICAL_HOST, CANONICAL_ORIGIN, FEED_PATH, PATHS } from "../lib/paths.mjs";
+import { renderRss } from "../lib/rss.mjs";
 import { jpegRefuseCopy, QUOTE_FIELDS } from "../public/js/engine.js";
 import { writeSocialCard } from "./social-card.mjs";
 
@@ -91,6 +92,7 @@ const GLAMA_AZIEL_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/aziel-runti
 const GLAMA_TRADES_RUNTIME = "https://glama.ai/mcp/servers/AzielEliab/trades-runtime";
 const DOORS_CHECKED = "2026-11-19";
 const SURFACE_UPDATED = "2026-11-20";
+const FEED_PUBLISHED = "2026-11-27";
 const PUBLIC_DOORS = [
   { "@type": "WebSite", name: "Aziel Eliab", url: "https://www.azieleliab.com/", description: "Identity hub." },
   {
@@ -234,6 +236,7 @@ function layout({ path: pagePath, title, description, body, robots = "index,foll
 <meta name="author" content="Aziel Eliab">
 <meta name="robots" content="${robots}">
 <link rel="canonical" href="${canonical}">
+<link rel="alternate" type="application/rss+xml" title="The Furnace Isn't Free" href="${CANONICAL_ORIGIN}${FEED_PATH}">
 <link rel="author" href="${PERSON_ID}">
 ${[
   ...PUBLIC_DOORS.map((item) => item.url),
@@ -383,6 +386,7 @@ function whoIsText() {
     "",
     "Machine files:",
     ...MACHINE_PATHS.map((machinePath) => `- ${CANONICAL_ORIGIN}${machinePath}`),
+    `RSS 2.0: ${CANONICAL_ORIGIN}${FEED_PATH}`,
     "",
     "Tip:",
     "On 2026-11-06, production /health reported source_base_tip_short d47caa6d and noted_vid 6a781b04.",
@@ -1226,12 +1230,37 @@ const urls = [
   }),
   ...MACHINE_PATHS.map((machinePath) => {
     const priority = machinePath === "/cite.json" || machinePath === "/llms.txt" || machinePath === "/ai.txt" ? "0.6" : "0.8";
-    return `  <url><loc>${CANONICAL_ORIGIN}${machinePath}</loc><lastmod>${SURFACE_UPDATED}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
-  })
+    const touched = new Set(["/llms.txt", "/ai.txt", "/who-is", "/who-is-aziel-eliab.txt", "/cite.json"]);
+    const lastmod = touched.has(machinePath) ? FEED_PUBLISHED : SURFACE_UPDATED;
+    return `  <url><loc>${CANONICAL_ORIGIN}${machinePath}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
+  }),
+  `  <url><loc>${CANONICAL_ORIGIN}${FEED_PATH}</loc><lastmod>${FEED_PUBLISHED}</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>`
 ].join("\n");
 await writeFile(
   path.join(publicDir, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`
+);
+
+const homePage = pages.find((page) => page.path === "/");
+const feedItems = pages
+  .map((page) => ({
+    path: page.path,
+    title: page.title,
+    description: page.description,
+    date: contentDate(page)
+  }))
+  .sort((a, b) => {
+    const byDate = b.date.localeCompare(a.date);
+    if (byDate !== 0) return byDate;
+    return PATHS.indexOf(a.path) - PATHS.indexOf(b.path);
+  });
+await writeFile(
+  path.join(publicDir, FEED_PATH.slice(1)),
+  renderRss({
+    title: "The Furnace Isn't Free",
+    description: homePage.description,
+    items: feedItems
+  })
 );
 
 const robots = `# The Furnace Isn't Free — open crawl
@@ -1256,6 +1285,7 @@ Allow: /api/health
 Allow: /health
 Allow: /version
 Allow: /sitemap.xml
+Allow: /rss.xml
 Allow: /llms.txt
 Allow: /ai.txt
 Allow: /cite.json
@@ -1310,6 +1340,9 @@ Allow: /
 User-agent: Amazonbot
 Allow: /
 
+# RSS 2.0 feed: ${CANONICAL_ORIGIN}${FEED_PATH}
+# GET and HEAD for /feed, /feed/, /rss, /rss/, and /feed.xml 301 to that file.
+
 Sitemap: ${CANONICAL_ORIGIN}/sitemap.xml
 `;
 await writeFile(path.join(publicDir, "robots.txt"), robots);
@@ -1335,6 +1368,13 @@ It does not decide whether a furnace is safe.
 
 ## Pages
 ${PATHS.map((pagePath) => `- ${pagePath === "/" ? CANONICAL_ORIGIN + "/" : CANONICAL_ORIGIN + pagePath}`).join("\n")}
+
+## Feed
+RSS 2.0: ${CANONICAL_ORIGIN}${FEED_PATH}
+Content type: application/rss+xml; charset=utf-8
+Each item is one public HTML page on ${CANONICAL_ORIGIN}. The item date is that page's content date.
+GET and HEAD for /feed, /feed/, /rss, /rss/, and /feed.xml 301 to ${FEED_PATH} when this Worker receives the request. www follows the same one-hop apex redirect.
+This file does not submit the feed to a reader or to IndexNow.
 
 ## Calculator
 Blank money inputs stay unknown. Explicit 0 is zero.
@@ -1394,6 +1434,7 @@ const cite = {
   person_id: "https://www.azieleliab.com/#aziel",
   site: `${CANONICAL_ORIGIN}/`,
   canonical: `${CANONICAL_ORIGIN}/`,
+  feed: `${CANONICAL_ORIGIN}${FEED_PATH}`,
   alias: "https://www.furnaceisntfree.com/",
   title: "The Furnace Isn't Free",
   about: "Homeowner education on HVAC offer structure, furnace allowances, and quote transparency.",

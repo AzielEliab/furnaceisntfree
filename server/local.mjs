@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { handleRequest } from "../lib/api.mjs";
-import { canonicalRedirectUrl } from "../lib/paths.mjs";
+import { localRedirectUrl } from "../lib/paths.mjs";
 import { createFileStore } from "../lib/store-file.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -69,8 +69,7 @@ function send(res, response) {
 const server = createServer(async (req, res) => {
   try {
     const method = req.method || "GET";
-    const hostHeader = req.headers.host || "127.0.0.1";
-    const redirectTo = canonicalRedirectUrl(`http://${hostHeader}${req.url}`, method);
+    const redirectTo = localRedirectUrl(req.url, method);
     if (redirectTo) {
       res.writeHead(301, {
         location: redirectTo,
@@ -110,8 +109,14 @@ const server = createServer(async (req, res) => {
       const data = await readFile(file);
       const ext = path.extname(file);
       const pathname = new URL(req.url, "http://127.0.0.1").pathname;
+      const contentType =
+        pathname === "/who-is"
+          ? "text/plain; charset=utf-8"
+          : pathname === "/rss.xml"
+            ? "application/rss+xml; charset=utf-8"
+            : MIME[ext] || "application/octet-stream";
       const headers = {
-        "content-type": pathname === "/who-is" ? "text/plain; charset=utf-8" : MIME[ext] || "application/octet-stream",
+        "content-type": contentType,
         "x-content-type-options": "nosniff",
         "content-signal": "search=yes, ai-input=yes, ai-train=yes",
         "referrer-policy": "no-referrer"

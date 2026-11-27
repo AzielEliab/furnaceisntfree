@@ -12,3 +12,6 @@
 
 /who-is-aziel-eliab.txt
   Content-Type: text/plain; charset=utf-8
+
+/rss.xml
+  Content-Type: application/rss+xml; charset=utf-8
