@@ -721,6 +721,38 @@ test("alias locations use the https apex and ignore the request host", async () 
   assert.equal(localRedirectUrl("http://evil.com/checklist", "GET"), checklist);
 });
 
+test("workers.dev serves health and count without redirecting them", async () => {
+  const preview = "https://the-furnace-isnt-free.workers.dev";
+  const versionId = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
+  const direct = ["/api/health", "/health", "/version", "/api/version", "/count", "/v1/count"];
+  for (const path of direct) {
+    assert.equal(canonicalRedirectUrl(`${preview}${path}`, "GET"), null, path);
+    assert.equal(canonicalRedirectUrl(`${preview}${path}`, "HEAD"), null, path);
+    for (const method of ["GET", "HEAD"]) {
+      const response = await worker.fetch(new Request(`${preview}${path}`, { method }), {
+        CF_VERSION_METADATA: { id: versionId, tag: "", timestamp: "" }
+      });
+      assert.equal(response.status, 200, `${method} ${path}`);
+      assert.equal(response.headers.get("location"), null, `${method} ${path}`);
+      if (method === "HEAD") continue;
+      const body = await response.json();
+      if (path === "/count" || path === "/v1/count") {
+        assert.equal(typeof body.views, "number", path);
+      } else {
+        assert.equal(body.deployed, false, path);
+        assert.equal(body.cloudflare_version_id, versionId, path);
+        assert.equal(body.indexing, "unconfirmed", path);
+      }
+    }
+  }
+  const page = await worker.fetch(new Request(`${preview}/checklist`));
+  assert.equal(page.status, 301);
+  assert.equal(page.headers.get("location"), "https://furnaceisntfree.com/checklist/");
+  const wwwHealth = await worker.fetch(new Request("https://www.furnaceisntfree.com/api/health"));
+  assert.equal(wwwHealth.status, 301);
+  assert.equal(wwwHealth.headers.get("location"), "https://furnaceisntfree.com/api/health");
+});
+
 test("/stats stays JSON and slash HTML aliases are permanent", async () => {
   const store = createMemoryStore();
   const stats = await worker.fetch(new Request("https://furnaceisntfree.com/stats"), { SITE_KV: undefined });
