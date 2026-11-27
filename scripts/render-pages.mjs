@@ -294,7 +294,7 @@ ${body}
     <p class="ecosystem-line">Part of the Aziel Eliab ecosystem</p>
     <p class="brand-line">We don't name companies. We name what they do.</p>
     <ul class="footer-nav">${footer}</ul>
-    <p class="fine">Content reviewed ${REVIEWED}. Canonical host: furnaceisntfree.com. www.furnaceisntfree.com is an alias. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed. First-party view counts are at <a href="/stats/">/stats</a> and <a href="/count">/count</a>. The RSS feed is <a href="${FEED_PATH}">/rss.xml</a>.</p>
+    <p class="fine">Content reviewed ${REVIEWED}. Canonical host: furnaceisntfree.com. www.furnaceisntfree.com is an alias. furnaceisntfree.com is live and deployed. Search-engine indexing is unconfirmed. First-party view counts are at <a href="/stats/">/stats</a> and <a href="/count">/count</a>.</p>
   </div>
 </footer>
 <p class="print-only">Part of the Aziel Eliab ecosystem</p>

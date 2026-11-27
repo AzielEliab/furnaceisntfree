@@ -834,12 +834,43 @@ test("RSS feed lists every public page on the apex", async () => {
   }
   assert.equal(itemLinks[0], "https://furnaceisntfree.com/aziel/");
   assert.match(feed, /<lastBuildDate>Fri, 20 Nov 2026 00:00:00 GMT<\/lastBuildDate>/);
+  const storedContentDate = {
+    "/": "2026-11-06",
+    "/how-the-offer-works/": "2026-11-05",
+    "/the-numbers/": "2026-11-05",
+    "/compare-quotes/": "2026-10-31",
+    "/checklist/": "2026-10-31",
+    "/repair-or-replace/": "2026-10-31",
+    "/discount-reality-check/": "2026-11-05",
+    "/evidence/": "2026-10-31",
+    "/submit/": "2026-10-31",
+    "/aziel/": "2026-11-20",
+    "/about/": "2026-11-06",
+    "/privacy/": "2026-10-31",
+    "/terms/": "2026-10-31",
+    "/editorial/": "2026-10-31",
+    "/corrections/": "2026-10-31",
+    "/stats/": "2026-10-31"
+  };
+  const items = [...feed.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((match) => match[1]);
+  assert.equal(items.length, PATHS.length);
+  for (const item of items) {
+    const link = item.match(/<link>([^<]+)<\/link>/)[1];
+    const pagePath = link === "https://furnaceisntfree.com/" ? "/" : new URL(link).pathname;
+    const pubDate = item.match(/<pubDate>([^<]+)<\/pubDate>/)[1];
+    const day = new Date(pubDate).toISOString().slice(0, 10);
+    assert.equal(day, storedContentDate[pagePath], pagePath);
+    assert.equal(pubDate.endsWith("00:00:00 GMT"), true, pubDate);
+    const htmlPath = pagePath === "/" ? "index.html" : `${pagePath.slice(1)}index.html`;
+    const html = await readFile(path.join(publicDir, htmlPath), "utf8");
+    assert.match(html, new RegExp(`"dateModified":"${day}"`));
+  }
+  assert.equal(feed.includes("27 Nov 2026"), false);
   const home = await readFile(path.join(publicDir, "index.html"), "utf8");
   assert.match(
     home,
     /<link rel="alternate" type="application\/rss\+xml" title="The Furnace Isn't Free" href="https:\/\/furnaceisntfree\.com\/rss\.xml">/
   );
-  assert.match(home, /href="\/rss\.xml"/);
   const robots = await readFile(path.join(publicDir, "robots.txt"), "utf8");
   assert.match(robots, /Allow: \/rss\.xml/);
   const llms = await readFile(path.join(publicDir, "llms.txt"), "utf8");
@@ -859,6 +890,22 @@ test("RSS feed lists every public page on the apex", async () => {
   const head = await worker.fetch(new Request(`https://furnaceisntfree.com${FEED_PATH}`, { method: "HEAD" }), { ASSETS: assets });
   assert.equal(head.status, 200);
   assert.equal(head.headers.get("content-type"), "application/rss+xml; charset=utf-8");
+});
+
+test("visible HTML does not link the feed", async () => {
+  const files = await htmlFiles(publicDir);
+  assert.ok(files.length >= PATHS.length);
+  const feedLink = /href="[^"]*(?:rss\.xml|\/rss\/?|\/feed(?:\.xml)?\/?)"/i;
+  for (const file of files) {
+    const html = await readFile(file, "utf8");
+    const head = html.match(/<head[\s\S]*?<\/head>/i)[0];
+    const visible = html.replace(/<head[\s\S]*?<\/head>/i, "");
+    assert.match(head, /rel="alternate" type="application\/rss\+xml"/, file);
+    assert.doesNotMatch(visible, feedLink, file);
+    assert.equal(visible.includes("rss.xml"), false, file);
+    assert.equal(visible.includes("RSS feed"), false, file);
+    assert.equal(visible.includes("<footer") && visible.includes("rss"), false, file);
+  }
 });
 
 test("HTML and text responses send Content-Signal", async () => {
