@@ -6,7 +6,7 @@ import test from "node:test";
 import { handleRequest } from "../lib/api.mjs";
 import { INDEXNOW_KEY, INDEXNOW_FILENAME, INDEXNOW_PATH, INDEXNOW_WELL_KNOWN_PATH } from "../lib/indexnow.mjs";
 import worker from "../src/worker.js";
-import { CANONICAL_HTML_PATH, FEED_PATH, PATHS, canonicalRedirectUrl } from "../lib/paths.mjs";
+import { CANONICAL_HTML_PATH, FEED_PATH, PATHS, canonicalRedirectUrl, localRedirectUrl } from "../lib/paths.mjs";
 import { createMemoryStore } from "../lib/store-memory.mjs";
 import {
   analyzeQuotes,
@@ -646,6 +646,79 @@ test("www and HTML aliases end on the apex in one hop", async () => {
   const postFeed = await worker.fetch(new Request("https://furnaceisntfree.com/feed", { method: "POST", body: "x" }), {});
   assert.notEqual(postFeed.status, 301);
   assert.equal(canonicalRedirectUrl("https://furnaceisntfree.com/rss.xml", "GET"), null);
+});
+
+test("alias locations use the https apex and ignore the request host", async () => {
+  const feed = "https://furnaceisntfree.com/rss.xml";
+  const checklist = "https://furnaceisntfree.com/checklist/";
+  const redirects = [
+    ["https://evil.com/feed", feed],
+    ["http://evil.com/feed", feed],
+    ["https://evil.com/checklist", checklist],
+    ["http://evil.com/checklist", checklist],
+    ["https://furnaceisntfree.com./feed", feed],
+    ["http://furnaceisntfree.com./rss", feed],
+    ["https://furnaceisntfree.com./checklist", checklist],
+    ["https://www.furnaceisntfree.com./feed/", feed],
+    ["https://www.furnaceisntfree.com./checklist", checklist],
+    ["https://WWW.Furnaceisntfree.com./doors", "https://furnaceisntfree.com/aziel/"],
+    ["https://the-furnace-isnt-free.workers.dev/feed", feed],
+    ["http://the-furnace-isnt-free.workers.dev/checklist", checklist],
+    ["https://the-furnace-isnt-free.workers.dev/doors?x=1", "https://furnaceisntfree.com/aziel/?x=1"],
+    ["https://evil.com/feed?x=1", `${feed}?x=1`],
+    ["https://evil.com/aziel?q=1", "https://furnaceisntfree.com/aziel/?q=1"]
+  ];
+  for (const [from, to] of redirects) {
+    assert.equal(canonicalRedirectUrl(from, "GET"), to, from);
+    assert.equal(canonicalRedirectUrl(from, "HEAD"), to, from);
+    for (const method of ["GET", "HEAD"]) {
+      const response = await worker.fetch(
+        new Request(from, { method, headers: { "x-forwarded-host": "evil.com", host: "evil.com" } }),
+        {}
+      );
+      assert.equal(response.status, 301, `${method} ${from}`);
+      const location = response.headers.get("location");
+      assert.equal(location, to, `${method} ${from}`);
+      const parsed = new URL(location);
+      assert.equal(parsed.protocol, "https:");
+      assert.equal(parsed.hostname, "furnaceisntfree.com");
+      assert.equal(location.includes("evil.com"), false, from);
+      assert.equal(location.includes("workers.dev"), false, from);
+    }
+  }
+  const forwarded = await worker.fetch(
+    new Request("https://furnaceisntfree.com/checklist/", { headers: { "x-forwarded-host": "evil.com" } }),
+    {}
+  );
+  assert.notEqual(forwarded.status, 301);
+  assert.equal(forwarded.headers.get("location"), null);
+  const blocked = [
+    "https://evil.com//feed",
+    "https://evil.com//checklist",
+    "https://evil.com//evil",
+    "http://www.furnaceisntfree.com//evil",
+    "https://the-furnace-isnt-free.workers.dev//checklist",
+    "https://evil.com/\\feed",
+    "https://evil.com/\\checklist",
+    "https://evil.com/%5Cfeed",
+    "https://evil.com/%5Cchecklist",
+    "https://furnaceisntfree.com./%5Cfeed",
+    "https://www.furnaceisntfree.com./checklist%5C",
+    "https://the-furnace-isnt-free.workers.dev/%5Cchecklist"
+  ];
+  for (const from of blocked) {
+    assert.equal(canonicalRedirectUrl(from, "GET"), null, from);
+    const response = await worker.fetch(new Request(from, { headers: { "x-forwarded-host": "evil.com" } }), {});
+    assert.notEqual(response.status, 301, from);
+    assert.equal(response.headers.get("location"), null, from);
+  }
+  assert.equal(localRedirectUrl("/checklist", "GET"), checklist);
+  assert.equal(localRedirectUrl("/feed?x=1", "GET"), `${feed}?x=1`);
+  assert.equal(localRedirectUrl("//evil.com/checklist", "GET"), null);
+  assert.equal(localRedirectUrl("//evil", "GET"), null);
+  assert.equal(localRedirectUrl("/\\checklist", "GET"), null);
+  assert.equal(localRedirectUrl("/%5Cfeed", "GET"), null);
+  assert.equal(localRedirectUrl("http://evil.com/checklist", "GET"), checklist);
 });
 
 test("/stats stays JSON and slash HTML aliases are permanent", async () => {

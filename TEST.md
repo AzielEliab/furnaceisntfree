@@ -8,7 +8,7 @@ npm test
 
 That command renders `public/` and runs `node --test test/*.test.mjs`.
 
-Last run during this build: 25 tests, 25 passed. The run checks that public URLs use `https://furnaceisntfree.com`, that GET and HEAD on `www.furnaceisntfree.com` 301 to the apex in one hop (including `/`, `/aziel`, `/aziel/`, `/doors`, `/doors/`, `/robots.txt`, `/sitemap.xml`, and `/rss.xml`), that `/feed`, `/rss`, and `/feed.xml` 301 to `/rss.xml`, that known HTML aliases use 301, that `/.well-known/indexnow-key.txt` returns the IndexNow key as `text/plain`, that HTML and text responses send `Content-Signal`, and that `/stats` stays JSON.
+Last run during this build: 26 tests, 26 passed. The run checks that public URLs use `https://furnaceisntfree.com`, that GET and HEAD on `www.furnaceisntfree.com` 301 to the apex in one hop (including `/`, `/aziel`, `/aziel/`, `/doors`, `/doors/`, `/robots.txt`, `/sitemap.xml`, and `/rss.xml`), that `/feed`, `/rss`, and `/feed.xml` 301 to `/rss.xml`, that known HTML aliases use 301, that `/.well-known/indexnow-key.txt` returns the IndexNow key as `text/plain`, that HTML and text responses send `Content-Signal`, and that `/stats` stays JSON.
 
 Covered:
 
@@ -29,6 +29,7 @@ Covered:
 - `cite.json` Person `@id` and `sameAs` include `https://www.azieleliab.com/#aziel`.
 - `sitemap.xml` lists every public route. `llms.txt` and `ai.txt` match and include the calculator formula.
 - `/rss.xml` is RSS 2.0. Each public HTML page is one item. Links use `https://furnaceisntfree.com`. Item dates are the stored page content dates. The head advertises the feed. The visible body and footer do not. The response content type is `application/rss+xml`.
+- HTML and feed alias `Location` values are built as `https://furnaceisntfree.com` plus the canonical path and query. `evil.com`, `X-Forwarded-Host`, a trailing dot on the apex or www, and `workers.dev` do not stay in that header. Paths with `//`, a backslash, or `%5C` are not redirected. The local server does not build the redirect from the Host header.
 
 ## Manual checks in this build
 
